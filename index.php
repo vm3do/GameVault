@@ -45,16 +45,16 @@
     }
   </style>
 </head>
-<body class="bg-gray-900 text-white">
+<body class="text-white bg-gray-900">
   <!-- Header -->
-  <header class="fixed w-full z-50 bg-transparent backdrop-blur-sm">
-    <div class="container mx-auto flex justify-between items-center p-4">
+  <header class="fixed z-50 w-full bg-transparent backdrop-blur-sm">
+    <div class="container flex items-center justify-between p-4 mx-auto">
       <!-- Logo -->
       <div class="text-xl font-bold text-violet-accent">VirtualWorld</div>
       <!-- CTA Buttons -->
       <div class="space-x-4">
-        <button class="bg-violet-accent px-4 py-2 rounded-lg hover:bg-violet-700 transition">Login</button>
-        <button class="bg-gray-700 px-4 py-2 rounded-lg hover:bg-gray-600 transition">Sign Up</button>
+        <button class="px-4 py-2 transition rounded-lg bg-violet-accent hover:bg-violet-700" id="toLogin">Login</button>
+        <button class="px-4 py-2 transition bg-gray-700 rounded-lg hover:bg-gray-600" id="toSignup">Sign Up</button>
       </div>
     </div>
   </header>
@@ -66,10 +66,10 @@
     <!-- Darker Overlay -->
     <div class="absolute top-0 left-0 w-full h-full bg-black bg-opacity-70"></div>
     <!-- Centered Text (Above the overlay) -->
-    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white z-10">
-      <h1 class="text-6xl font-bold mb-6">Welcome to the Virtual World</h1>
+    <div class="absolute z-10 text-center text-white transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+      <h1 class="mb-6 text-6xl font-bold">Welcome to the Virtual World</h1>
       <!-- Explore CTA Button -->
-      <button class="bg-violet-accent px-6 py-3 rounded-lg hover:bg-violet-700 transition text-lg">
+      <button class="px-6 py-3 text-lg transition rounded-lg bg-violet-accent hover:bg-violet-700">
         Explore Games
       </button>
     </div>
@@ -78,9 +78,18 @@
   <!-- Content Section (Optional) -->
   <section class="py-16 bg-gray-900">
     <div class="container mx-auto text-center">
-      <h2 class="text-3xl font-bold mb-4">Discover More</h2>
+      <h2 class="mb-4 text-3xl font-bold">Discover More</h2>
       <p class="text-gray-400">Join our community and dive into the ultimate gaming experience.</p>
     </div>
   </section>
+  <script>
+    document.getElementById("toLogin").addEventListener("click", function() {
+      window.location.href = "login.php";
+    });
+    document.getElementById("toSignup").addEventListener("click", function() {
+      window.location.href = "signup.php";
+    });
+    
+  </script>
 </body>
 </html>

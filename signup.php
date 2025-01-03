@@ -1,6 +1,7 @@
 <?php
-    require 'users.php';
+    require './Classes/users.php';
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,6 +27,7 @@
     <!-- Sign Up Card -->
     <div class="w-full max-w-md p-8 bg-gray-800 rounded-lg shadow-lg">
       <h2 class="mb-6 text-2xl font-bold text-center">Sign Up</h2>
+      <p class="text-center text-red-600"><?php echo $error; ?></p>
       <!-- Sign Up Form -->
       <form class="space-y-6" action="signup.php" method="POST">
         <!-- Name Input -->

@@ -143,3 +143,9 @@ if(isset($_POST['ban'])) {
     $stmt = $conn->prepare($sql);
     $stmt->execute(['id' => $userId]);
 }
+if(isset($_POST['unban'])) {
+    $userId = $_POST['unban'];
+    $sql = "UPDATE users SET status = 'active' WHERE id = :id";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute(['id' => $userId]);
+}

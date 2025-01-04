@@ -136,13 +136,12 @@
             <tr>
               <th class="px-6 py-3 text-sm font-semibold text-left">Username</th>
               <th class="px-6 py-3 text-sm font-semibold text-left">Email</th>
-              <th class="px-6 py-3 text-sm font-semibold text-left">Role</th>
+              <th class="px-6 py-3 text-sm font-semibold text-left">Status</th>
               <th class="px-6 py-3 text-sm font-semibold text-left">Actions</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-600">
           <?php foreach ($allUsers as $user): ?>
-            <!-- User 1 -->
             <tr>
               <td class="px-6 py-4"><?php echo $user['username']?></td>
               <td class="px-6 py-4"><?php echo $user['email']?></td>
@@ -152,13 +151,21 @@
               <form action="" method="POST">
                   <input type="hidden" name="upgrade" value="<?php echo $user['id']?>"> 
                   <button type="submit"  class="px-4 py-2 transition rounded-lg bg-violet-accent hover:bg-violet-700">Upgrade</button>
-              </form>     
+              </form>
+              <?php if($user['status'] == 'active'):?>      
               <form action="" method="POST">
                   <input type="hidden" name="ban" value="<?php echo $user['id']?>">
-                  <button type="submit" class="px-4 py-2 ml-2 transition bg-red-500 rounded-lg hover:bg-red-600">ban</button>
-              </form>     
-            </div>    
-             
+                  <button type="submit" class="px-4 py-2 ml-2 transition bg-red-500 rounded-lg hover:bg-red-600">Ban</button>
+              </form> 
+              <?php endif; ?>  
+                 
+              <?php if($user['status'] == 'banned'):?> 
+              <form action="" method="POST">
+                  <input type="hidden" name="unban" value="<?php echo $user['id']?>">
+                  <button type="submit" class="px-4 py-2 ml-2 transition bg-red-500 rounded-lg hover:bg-red-600">Unban</button>
+              </form>   
+              <?php endif; ?>  
+            </div>         
               <?php endforeach; ?>   
               </td>
             </tr>

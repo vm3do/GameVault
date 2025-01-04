@@ -69,7 +69,7 @@
     <div class="absolute z-10 text-center text-white transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
       <h1 class="mb-6 text-6xl font-bold">Welcome to the Virtual World</h1>
       <!-- Explore CTA Button -->
-      <button class="px-6 py-3 text-lg transition rounded-lg bg-violet-accent hover:bg-violet-700">
+      <button class="px-6 py-3 text-lg transition rounded-lg bg-violet-accent hover:bg-violet-700" id="toGames">
         Explore Games
       </button>
     </div>
@@ -88,6 +88,9 @@
     });
     document.getElementById("toSignup").addEventListener("click", function() {
       window.location.href = "signup.php";
+    });
+    document.getElementById("toGames").addEventListener("click", function() {
+      window.location.href = "games.php";
     });
     
   </script>

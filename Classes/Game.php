@@ -73,7 +73,19 @@ Class Game {
         return false;
       }
   }
-
+  
+  public function chats() {
+    try{
+        $sql = "SELECT u.username, c.message, c.time FROM chats c JOIN users u ON c.user_id = u.id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+      }
+      catch (PDOException $e) {
+          die("Erreur : " . $e->getMessage());
+      }
+  }
 }
 
 $db = new Database();

@@ -10,9 +10,9 @@ Class Game {
   
   public function addGame($apiId, $title, $description, $imageURL) {
     try{
-        $sql = "INSERT INTO games (api_id, title, description, image_url) VALUES (:api_id, :title, :description, :image_url)";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->execute(['api_id' => $apiId, 'title' => $title, 'description' => $description, 'image_url' => $imageURL]);
+        $add_sql = "INSERT INTO games (api_id, title, description, image_url) VALUES (:api_id, :title, :description, :image_url)";
+        $add_stmt = $this->connection->prepare($add_sql);
+        $add_stmt->execute(['api_id' => $apiId, 'title' => $title, 'description' => $description, 'image_url' => $imageURL]);
         return true;
     }
     catch(PDOException $e) {
@@ -36,9 +36,9 @@ Class Game {
 
   public function deleteGame($id) {
     try{
-        $sql = "DELETE FROM games WHERE id = :id";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->execute(['id' => $id]);
+        $del_sql = "DELETE FROM games WHERE id = :id";
+        $del_stmt = $this->connection->prepare($del_sql);
+        $del_stmt->execute(['id' => $id]);
         return true;
       }
       catch(PDOException $e) {
@@ -101,13 +101,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 // Delete Game ---------------------------------------------------------
 if (isset($_GET['Id']) && isset($_GET['action']) && $_GET['action'] === 'deleteGame'){
   $gameId = $_GET['Id'];
-  $del_sql = "DELETE FROM games WHERE id = :id";
-  $del_stmt = $conn->prepare($del_sql);
-  $del_stmt->execute(['id' => $gameId]);
-
-  if ($del_stmt){
+  $game = new Game($conn);
+  $result = $game->deleteGame($gameId);
+  if ($result){
     header('Location: ' . $_SERVER['PHP_SELF']);
   } 
+  else {
+    echo "game not deleted";
+  }
 }
 // --------------------------------------------------------------------
 // Update Game ---------------------------------------------------------
@@ -123,6 +124,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $result = $game->updateGame($gameId, $new_apiId, $new_title, $new_description, $new_imageURL);
     if ($result) {
       header('Location: ' . $_SERVER['PHP_SELF']);
+    }
+    else {
+      echo "game not updated";
     }
   }
 }

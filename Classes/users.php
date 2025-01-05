@@ -3,10 +3,10 @@
 require_once 'Config/db.php';
 
 class Users { 
-  private $connection;
-  public function __construct($conn) {
-    $this->connection = $conn;
-  }
+    private $connection;
+    public function __construct($conn) {
+      $this->connection = $conn;
+    }
   public function addUser($username, $email, $password) {
     $sql = "SELECT id FROM users WHERE username = :username";
     $stmt = $this->connection->prepare($sql);

@@ -3,7 +3,7 @@
 require_once '../Config/Db.php';
 
 class Game {
-    private $id;
+    // private $id;
     private $title;
     private $description;
     private $genre;
@@ -13,24 +13,25 @@ class Game {
     private $scrshot2;   // Screenshot 2
     private $scrshot3;   // Screenshot 3
     private $rating;
+    private $pdo;
 
     // Constructor
-    public function __construct($data = []) {
+    public function __construct($data = [], $pdo) {
+        $this->pdo = $pdo;
         $this->id = $data['id'] ?? null;
         $this->title = $data['title'] ?? null;
         $this->description = $data['description'] ?? null;
         $this->genre = $data['genre'] ?? null;
         $this->releaseDate = $data['releaseDate'] ?? null;
-        $this->background = $data['background'] ?? null;
+        $this->background = $data['background_url'] ?? null;
         $this->scrshot1 = $data['scrshot1'] ?? null;
         $this->scrshot2 = $data['scrshot2'] ?? null;
         $this->scrshot3 = $data['scrshot3'] ?? null;
         $this->rating = $data['rating'] ?? null;
-        $this->api_id = $data['api_id'] ?? null;
     }
 
     // Getters
-    public function getId() { return $this->id; }
+    // public function getId() { return $this->id; }
     public function getTitle() { return $this->title; }
     public function getDescription() { return $this->description; }
     public function getGenre() { return $this->genre; }
@@ -55,13 +56,11 @@ class Game {
     public function setRating($rating) { $this->rating = $rating; }
 
     // Save a new game to the database
-    public function save() {
-        $db = new Database();
-        $pdo = $db->connect();
+    public function addGame() {
 
         $sql = "INSERT INTO games (title, description, genre, release_date, background_url, screenshot1_url, screenshot2_url, screenshot3_url, rating)
                 VALUES (:title, :description, :genre, :release_date, :background_url, :screenshot1_url, :screenshot2_url, :screenshot3_url, :rating)";
-        $stmt = $pdo->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
 
         $stmt->execute([
             ':title' => $this->title,
@@ -75,13 +74,11 @@ class Game {
             ':rating' => $this->rating
         ]);
 
-        $this->id = $pdo->lastInsertId();
+        $this->id = $this->pdo->lastInsertId();
     }
 
     // Update an existing game in the database
-    public function update() {
-        $db = new Database();
-        $pdo = $db->connect();
+    public function updateGame() {
 
         $sql = "UPDATE games SET
                 api_id = :api_id,
@@ -95,7 +92,7 @@ class Game {
                 screenshot3_url = :screenshot3_url,
                 rating = :rating
                 WHERE id = :id";
-        $stmt = $pdo->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
 
         $stmt->execute([
             ':api_id' => $this->api_id,
@@ -113,12 +110,9 @@ class Game {
     }
 
     // Delete a game from the database
-    public function delete() {
-        $db = new Database();
-        $pdo = $db->connect();
-
+    public function deleteGame() {
         $sql = "DELETE FROM games WHERE id = :id";
-        $stmt = $pdo->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':id' => $this->id]);
     }
 
@@ -133,14 +127,14 @@ class Game {
 
         $games = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $games[] = new Game($row);
+            $games[] = new Game($row, $pdo);
         }
 
         return $games;
     }
 
     // Fetch a single game by ID
-    public static function getById($id) {
+    public static function getById() {
         $db = new Database();
         $pdo = $db->connect();
 

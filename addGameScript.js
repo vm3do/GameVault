@@ -32,7 +32,8 @@ document.querySelector("#fetchButton").addEventListener('click', ()=> {
     .then(data => {
         console.log(data)
         document.querySelector("#gameGenre").value = data.genres.length > 0 ? data.genres[0]['name'] : "null"
-        document.querySelector("#description").value = data.description
+        document.querySelector("#description").value = data.description_raw
+        
         document.querySelector("#releaseDate").value = data.released
         document.querySelector("#background").value = data.background_image
         

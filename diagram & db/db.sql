@@ -12,7 +12,6 @@ CREATE TABLE users (
 
 CREATE TABLE games (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    api_id INT,
     title VARCHAR(255) NOT NULL,
     description TEXT,
     genre VARCHAR(100),

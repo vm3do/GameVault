@@ -15,8 +15,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'api_id' => $_POST['api_id'] ?? null
     ];
 
-    $game = new Game($gameData);
-    $game->save();
+    $db = new Database();
+    $pdo = $db->get_connection();
+
+    $game = new Game($gameData, $pdo );
+    $game->addGame();
 
     // Redirect or show success message
     header('Location: dashboard.php');

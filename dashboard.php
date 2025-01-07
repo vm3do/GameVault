@@ -1,13 +1,17 @@
-<?php 
-    require './classes/users.php';
-    $users = new Users($conn); 
+<?php
+
+    require './usersManagement.php';
+    require './gameCRUD.php';
+
+    require './Classes/users.php';
+    $users = new Users($conn);
     $allUsers = $users->getAllUsers();
 
-    require './classes/Game.php';
-    $games = new Game($conn);
-    $allGames = $games->getAllGames();
-    
-?>   
+    // $games = new Game($conn);
+    $allGames = Game::getAllGames();
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +20,7 @@
   <title>Admin Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-
+    /* Custom violet accent */
     .bg-violet-accent {
       background-color: #7c3aed;
     }
@@ -26,81 +30,108 @@
     .border-violet-accent {
       border-color: #7c3aed;
     }
+    /* Scrollable modal content with hidden scrollbar */
+    .modal-content {
+      max-height: 70vh; /* 70% of viewport height */
+      overflow-y: auto; /* Enable vertical scrolling */
+      scrollbar-width: none; /* Hide scrollbar for Firefox */
+    }
+    .modal-content::-webkit-scrollbar {
+      display: none; /* Hide scrollbar for Chrome, Safari, and Edge */
+    }
+    /* Custom input focus outline */
+    .custom-input:focus {
+      outline: none;
+      border-color: #7c3aed; /* Violet accent */
+      box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.5); /* Soft glow */
+    }
+    /* Loading spinner */
+    .loader {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #7c3aed;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
-<body class="text-white bg-gray-900">
-  <!-- Admin Dashboard Container -------------------------------------------------------------------------------------------------->
+<body class="bg-gray-900 text-white">
+  <!-- Admin Dashboard Container -->
   <div class="flex flex-col min-h-screen p-6">
-    <header class="p-4 mb-6 bg-gray-800 rounded-lg">
+    <!-- Header -->
+    <header class="bg-gray-800 p-4 rounded-lg mb-6">
       <h1 class="text-2xl font-bold">Admin Dashboard</h1>
     </header>
-    <!-- Statistics Section ------------------------------------------------------------------------------------------------->
-    <section class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3">
+    <!-- Stats Section -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
       <!-- Total Games -->
-      <div class="p-6 bg-gray-800 rounded-lg">
+      <div class="bg-gray-800 p-6 rounded-lg">
         <h3 class="text-gray-400">Total Games</h3>
-        <p class="text-2xl font-bold">120</p>
+        <p class="text-2xl font-bold"></p>
       </div>
       <!-- Total Users -->
-      <div class="p-6 bg-gray-800 rounded-lg">
+      <div class="bg-gray-800 p-6 rounded-lg">
         <h3 class="text-gray-400">Total Users</h3>
-        <p class="text-2xl font-bold">1,234</p>
+        <p class="text-2xl font-bold"></p>
       </div>
-      <!-- Chats -->
-      <div class="p-6 bg-gray-800 rounded-lg">
+      <!-- Active Chats -->
+      <div class="bg-gray-800 p-6 rounded-lg">
         <h3 class="text-gray-400">Active Chats</h3>
-        <p class="text-2xl font-bold">56</p>
+        <p class="text-2xl font-bold"></p>
       </div>
     </section>
-  <!-- ------------------------------------------------------------------------------------------------------------------------ -->
-    <section class="p-6 mb-6 bg-gray-800 rounded-lg">
+    <!-- Action Buttons -->
+    <section class="bg-gray-800 p-6 rounded-lg mb-6">
       <div class="flex flex-wrap gap-4">
-        <!-- Add Game Button --------------------------------------------------------------------- -->
+        <!-- Add Game Button -->
         <button
           onclick="openAddGameModal()"
-          class="flex items-center px-4 py-2 space-x-2 transition rounded-lg bg-violet-accent hover:bg-violet-700"
+          class="bg-violet-accent px-4 py-2 rounded-lg hover:bg-violet-700 transition flex items-center space-x-2"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>
           <span>Add Game</span>
         </button>
-        <!-- Manage Users Button ----------------------------------------------------------------- -->
+        <!-- Manage Users Button -->
         <button
           onclick="openModal()"
-          class="flex items-center px-4 py-2 space-x-2 transition rounded-lg bg-violet-accent hover:bg-violet-700"
+          class="bg-violet-accent px-4 py-2 rounded-lg hover:bg-violet-700 transition flex items-center space-x-2"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
           </svg>
           <span>Manage Users</span>
         </button>
       </div>
     </section>
-  <!-- All Games Added ------------------------------------------------------------------------------------------------------ -->
-    <section class="p-6 bg-gray-800 rounded-lg">
-      <h2 class="mb-4 text-2xl font-bold">All Games</h2>
+    <!-- Games List Section -->
+    <section class="bg-gray-800 p-6 rounded-lg">
+      <h2 class="text-2xl font-bold mb-4">All Games</h2>
       <div class="overflow-x-auto">
-        <table class="min-w-full overflow-hidden bg-gray-700 rounded-lg">
+        <table class="min-w-full bg-gray-700 rounded-lg overflow-hidden">
           <thead class="bg-gray-600">
             <tr>
-              <th class="px-6 py-3 text-sm font-semibold text-left">Title</th>
-              <th class="px-6 py-3 text-sm font-semibold text-left">Genre</th>
-              <th class="px-6 py-3 text-sm font-semibold text-left">Release Date</th>
-              <th class="px-6 py-3 text-sm font-semibold text-left">Actions</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold">Title</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold">Genre</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold">Release Date</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold">Actions</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-600">  
+          <tbody class="divide-y divide-gray-600">
             <?php foreach ($allGames as $game): ?>
             <tr>
-              <td class="px-6 py-4"><?php echo $game['title'] ?></td>
-              <td class="px-6 py-4">not yet</td>
-              <td class="px-6 py-4">2025-01-05</td>
+              <td class="px-6 py-4"><?php echo $game['title']; ?></td>
+              <td class="px-6 py-4"><?php echo $game['genre']; ?></td>
+              <td class="px-6 py-4"><?php echo $game['release_date']; ?></td>
               <td class="px-6 py-4">
-            <div class="flex space-x-2 items-center">  
-                    <a href="dashboard.php?action=editGame&Id=<?php echo $game['id']; ?>" class="px-4 py-2 transition rounded-lg bg-violet-accent hover:bg-violet-700" >Edit</a>
-                    <a href="dashboard.php?action=deleteGame&Id=<?php echo $game['id']; ?>" class="px-4 py-2 ml-2 transition bg-red-500 rounded-lg hover:bg-red-600" >Delete</a>
-            </div>
+                <a href="dashboard.php?action=editGame&Id=<?php echo $game['id']; ?>" class="bg-violet-accent px-4 py-2 rounded-lg hover:bg-violet-700 transition">Edit</a>
+                <a href="dashboard.php?action=deleteGame&Id=<?php echo $game['id']; ?>" class="bg-red-500 px-4 py-2 rounded-lg hover:bg-red-600 transition ml-2">Delete</a>
               </td>
             </tr>
             <?php endforeach; ?>
@@ -110,239 +141,379 @@
     </section>
   </div>
 
-<!-- Manage Users Modal --------------------------------------------------------------------------------------------------------------->
+  <!-- Manage Users Modal -->
   <div
     id="manageUsersModal"
-    class="fixed inset-0 flex items-center justify-center hidden bg-gray-900 bg-opacity-75"
+    class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center hidden"
   >
-    <div class="w-full max-w-4xl p-6 mx-4 bg-gray-800 rounded-lg">
-      <div class="flex items-center justify-between mb-4">
+    <div class="bg-gray-800 p-6 rounded-lg w-full max-w-4xl mx-4">
+      <!-- Modal Header -->
+      <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-bold">Manage Users</h2>
         <button
           onclick="closeModal()"
-          class="text-gray-400 transition hover:text-white"
+          class="text-gray-400 hover:text-white transition"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
-      <!-- Table ------------------------------------------------------------------------>
+      <!-- Users Table -->
       <div class="overflow-x-auto">
-        <table class="min-w-full overflow-hidden bg-gray-700 rounded-lg">
+        <table class="min-w-full bg-gray-700 rounded-lg overflow-hidden">
           <thead class="bg-gray-600">
             <tr>
-              <th class="px-6 py-3 text-sm font-semibold text-left">Username</th>
-              <th class="px-6 py-3 text-sm font-semibold text-left">Email</th>
-              <th class="px-6 py-3 text-sm font-semibold text-left">Status</th>
-              <th class="px-6 py-3 text-sm font-semibold text-left">Actions</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold">Username</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold">Email</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold">Status</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold">Actions</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-600">
-          <?php foreach ($allUsers as $user): ?>
+            <?php foreach ($allUsers as $user): ?>
             <tr>
-              <td class="px-6 py-4"><?php echo $user['username']?></td>
-              <td class="px-6 py-4"><?php echo $user['email']?></td>
-              <td class="px-6 py-4"><?php echo $user['status']?></td>
+              <td class="px-6 py-4"><?php echo $user['username']; ?></td>
+              <td class="px-6 py-4"><?php echo $user['email']; ?></td>
+              <td class="px-6 py-4"><?php echo $user['status']; ?></td>
               <td class="px-6 py-4">
             <div class="flex space-x-2">
-              <form action="" method="POST">
-                  <input type="hidden" name="upgrade" value="<?php echo $user['id']?>"> 
-                  <button type="submit"  class="px-4 py-2 transition rounded-lg bg-violet-accent hover:bg-violet-700">Upgrade</button>
-              </form>
-              <?php if($user['status'] == 'active'):?>      
-              <form action="" method="POST">
-                  <input type="hidden" name="ban" value="<?php echo $user['id']?>">
-                  <button type="submit" class="px-4 py-2 ml-2 transition bg-red-500 rounded-lg hover:bg-red-600">Ban</button>
-              </form> 
-              <?php endif; ?>  
-                 
-              <?php if($user['status'] == 'banned'):?> 
-              <form action="" method="POST">
-                  <input type="hidden" name="unban" value="<?php echo $user['id']?>">
-                  <button type="submit" class="px-4 py-2 ml-2 transition bg-red-500 rounded-lg hover:bg-red-600">Unban</button>
-              </form>   
-              <?php endif; ?>  
-            </div>         
-              <?php endforeach; ?>   
+                <form action="" method="POST">
+                  <input type="hidden" name="upgrade" value="<?php echo $user['id']; ?>">
+                  <button type="submit" class="bg-violet-accent px-4 py-2 rounded-lg hover:bg-violet-700 transition">Upgrade</button>
+                </form>
+                <?php if($user['status'] == 'active'): ?>
+                <form action="" method="POST">
+                  <input type="hidden" name="ban" value="<?php echo $user['id']; ?>">
+                  <button type="submit" class="bg-red-500 px-4 py-2 rounded-lg hover:bg-red-600 transition ml-2">Ban</button>
+                </form>
+                <?php endif; ?>
+                <?php if($user['status'] == 'banned'): ?>
+                <form action="" method="POST">
+                  <input type="hidden" name="unban" value="<?php echo $user['id']; ?>">
+                  <button type="submit" class="bg-red-500 px-4 py-2 rounded-lg hover:bg-red-600 transition ml-2">Unban</button>
+                </form>
+                <?php endif; ?>
+                </div>
               </td>
             </tr>
+            <?php endforeach; ?>
           </tbody>
         </table>
       </div>
-    <!-- End Table ------------------------------------------------------------------------>
     </div>
   </div>
 
-<!-- Add Game Modal --------------------------------------------------------------------------------------------------------------->
+  <!-- Add Game Modal -->
   <div
     id="addGameModal"
-    class="fixed inset-0 flex items-center justify-center hidden bg-gray-900 bg-opacity-75"
+    class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center hidden"
   >
-    <div class="w-full max-w-2xl p-6 mx-4 bg-gray-800 rounded-lg">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-bold">Add New Game</h2>
+    <div class="bg-gray-800 p-6 rounded-lg w-full max-w-md mx-4">
+      <!-- Modal Header -->
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold">Add Game</h2>
         <button
           onclick="closeAddGameModal()"
-          class="text-gray-400 transition hover:text-white"
+          class="text-gray-400 hover:text-white transition"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
-      <!-- Add Form ------------------------------------------------------------------------------------------------>
-      <form action="dashboard.php" method="POST">
-        <div class="space-y-4">
-          <!-- API Id ---------------------------------------------------------------------------->
-          <div>
-            <label for="api_id" class="block text-sm font-medium text-gray-400">API ID</label>
+      <!-- Add Game Form -->
+      <form action="dashboard.php" method="POST" id="addGameForm" class="space-y-4 modal-content">
+        <!-- Game Title with Fetch Button -->
+        <div class="flex items-center gap-2">
+          <div class="flex-1">
+            <label for="gameTitle" class="block text-sm font-medium text-gray-400">Title</label>
             <input
               type="text"
-              name="apiId"
-              class="w-full px-4 py-2 mt-1 text-white bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+              id="gameTitle"
+              name="gameTitle"
+              class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-lg p-2 text-white custom-input focus:border-violet-accent focus:ring-violet-accent"
               required
             />
           </div>
-          <!-- Title ----------------------------------------------------------------------------->
-          <div>
-            <label for="title" class="block text-sm font-medium text-gray-400">Title</label>
-            <input
-              type="text"
-              name="title"
-              class="w-full px-4 py-2 mt-1 text-white bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
-              required
-            />
-          </div>
-          <!-- Description -->
-          <div>
-            <label for="description" class="block text-sm font-medium text-gray-400">Description</label>
-            <textarea
-              name="description"
-              rows="3"
-              class="w-full px-4 py-2 mt-1 text-white bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
-              required
-            ></textarea>
-          </div>
-          <!-- Image URL --------------------------------------------------------------------------------->
-          <div>
-            <label for="image_url" class="block text-sm font-medium text-gray-400">Image URL</label>
-            <input
-              type="url"
-              name="imageURL"
-              class="w-full px-4 py-2 mt-1 text-white bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
-              required
-            />
-          </div>
-          <!-- Add game Button ----------------------------------------------------------------------------->
-          <div class="flex justify-end">
-            <button
-              type="submit"
-              name="addGame"
-              class="px-4 py-2 transition rounded-lg bg-violet-accent hover:bg-violet-700"
-            >
-              Add Game
-            </button>
-          </div>
+          <button
+            type="button"
+            id="fetchButton"
+            class="bg-violet-accent px-4 py-2 rounded-lg hover:bg-violet-700 transition mt-6"
+          >
+            Fetch
+          </button>
+        </div>
+        <!-- Game Genre -->
+        <div>
+          <label for="gameGenre" class="block text-sm font-medium text-gray-400">Genre</label>
+          <input
+            type="text"
+            id="gameGenre"
+            name="gameGenre"
+            class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-lg p-2 text-white custom-input focus:border-violet-accent focus:ring-violet-accent"
+            required
+          />
+        </div>
+        <!-- Description -->
+        <div>
+          <label for="description" class="block text-sm font-medium text-gray-400">Description</label>
+          <textarea
+            id="description"
+            name="description"
+            rows="4"
+            class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-lg p-2 text-white custom-input focus:border-violet-accent focus:ring-violet-accent"
+            required
+          ></textarea>
+        </div>
+        <!-- Release Date -->
+        <div>
+          <label for="releaseDate" class="block text-sm font-medium text-gray-400">Release Date</label>
+          <input
+            type="date"
+            id="releaseDate"
+            name="releaseDate"
+            class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-lg p-2 text-white custom-input focus:border-violet-accent focus:ring-violet-accent"
+            required
+          />
+        </div>
+        <!-- Image URL -->
+        <div>
+          <label for="background" class="block text-sm font-medium text-gray-400">Image URL</label>
+          <input
+            type="url"
+            id="background"
+            name="background"
+            class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-lg p-2 text-white custom-input focus:border-violet-accent focus:ring-violet-accent"
+            required
+          />
+        </div>
+        <!-- Screenshot 1 -->
+        <div>
+          <label for="scrshot1" class="block text-sm font-medium text-gray-400">Screenshot 1 URL</label>
+          <input
+            type="url"
+            id="scrshot1"
+            name="scrshot1"
+            class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-lg p-2 text-white custom-input focus:border-violet-accent focus:ring-violet-accent"
+            required
+          />
+        </div>
+        <!-- Screenshot 2 -->
+        <div>
+          <label for="scrshot2" class="block text-sm font-medium text-gray-400">Screenshot 2 URL</label>
+          <input
+            type="url"
+            id="scrshot2"
+            name="scrshot2"
+            class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-lg p-2 text-white custom-input focus:border-violet-accent focus:ring-violet-accent"
+            required
+          />
+        </div>
+        <!-- Screenshot 3 -->
+        <div>
+          <label for="scrshot3" class="block text-sm font-medium text-gray-400">Screenshot 3 URL</label>
+          <input
+            type="url"
+            id="scrshot3"
+            name="scrshot3"
+            class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-lg p-2 text-white custom-input focus:border-violet-accent focus:ring-violet-accent"
+            required
+          />
+        </div>
+        <!-- Rating -->
+        <div>
+          <label for="rating" class="block text-sm font-medium text-gray-400">Rating</label>
+          <input
+            type="number"
+            id="rating"
+            name="rating"
+            min="0"
+            max="10"
+            step="0.1"
+            class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-lg p-2 text-white custom-input focus:border-violet-accent focus:ring-violet-accent"
+            required
+          />
+        </div>
+        <!-- Submit Button -->
+        <div class="flex justify-end">
+          <button
+            type="submit"
+            name="addGame"
+            class="bg-violet-accent px-4 py-2 rounded-lg hover:bg-violet-700 transition"
+          >
+            Add Game
+          </button>
         </div>
       </form>
-  <!-- End Form ------------------------------------------------------------------------------------------------------------->
     </div>
   </div>
-<!-- End Add Game Modul ------------------------------------------------------------------------------------------------------------->
 
-<!-- Update Game Modal --------------------------------------------------------------------------------------------------------------->
-<?php if (isset($_GET['Id']) && isset($_GET['action']) && $_GET['action'] === 'editGame'):
-      $game = new Game($conn);
-      $gameById = $game->getGameById($_GET['Id']);
- ?>
+  <!-- Update Game Modal -->
+  <?php if (isset($_GET['Id']) && isset($_GET['action']) && $_GET['action'] === 'editGame'):
+    $game = new Game($conn);
+    $gameById = $game->getGameById($_GET['Id']);
+  ?>
   <div
-    id="updateGameModal"
-    class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75"
+  id="updateGameModal"
+    class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center"
   >
-    <div class="w-full max-w-2xl p-6 mx-4 bg-gray-800 rounded-lg">
-      <div class="flex items-center justify-between mb-4">
+    <div class="bg-gray-800 p-6 rounded-lg w-full max-w-md mx-4">
+      <!-- Modal Header -->
+      <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-bold">Update Game</h2>
         <button
           onclick="closeUpdateGameModal()"
-          class="text-gray-400 transition hover:text-white"
+          class="text-gray-400 hover:text-white transition"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
-      <!-- Update Form ------------------------------------------------------------------------------------------------>
-      <form action="dashboard.php" method="POST">
-        <div class="space-y-4">
-        <?php if ($gameById) : ?>
-          <!-- API Id ---------------------------------------------------------------------------->
-          <div>
-            <label for="api_id" class="block text-sm font-medium text-gray-400">API ID</label>
+      <!-- Add Game Form -->
+      <form action="dashboard.php" method="POST" class="space-y-4 modal-content">
+      <?php if ($gameById) : ?>
+        <!-- Game Title with Fetch Button -->
+        <div class="flex items-center gap-2">
+          <div class="flex-1">
+            <label for="gameTitle" class="block text-sm font-medium text-gray-400">Title</label>
             <input
               type="text"
-              name="new_apiId"
-              value="<?php echo $gameById['api_id'] ; ?>"
-              class="w-full px-4 py-2 mt-1 text-white bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
-              required
-            />
-          </div>
-          <!-- New Title ----------------------------------------------------------------------------->
-          <div>
-            <label for="title" class="block text-sm font-medium text-gray-400">Title</label>
-            <input
-              type="text"
-              value="<?php echo $gameById['title'] ; ?>"
+              id="gameTitle"
               name="new_title"
-              class="w-full px-4 py-2 mt-1 text-white bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+              value="<?php echo $gameById['title']; ?>"
+              class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-lg p-2 text-white custom-input focus:border-violet-accent focus:ring-violet-accent"
               required
             />
           </div>
-          <!-- New Description ----------------------------------------------------------------------------->
-          <div>
-            <label for="description" class="block text-sm font-medium text-gray-400">Description</label>
-            <textarea
-              rows="3"
-              name="new_description"
-              class="w-full px-4 py-2 mt-1 text-white bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
-              required
-            ><?php echo $gameById['description']; ?>
-            </textarea>
-          </div>
-          <!-- New Image URL --------------------------------------------------------------------------------->
-          <div>
-            <label for="image_url" class="block text-sm font-medium text-gray-400">Image URL</label>
-            <input
-              type="url"
-              value="<?php echo $gameById['image_url'] ; ?>"
-              name="new_imageURL"
-              class="w-full px-4 py-2 mt-1 text-white bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
-              required
-            />
-          </div>
-          <?php endif; ?>
-          <!-- Update game Button ----------------------------------------------------------------------------->
-          <div class="flex justify-end">
-            <input type="hidden" name="gameId" value="<?php echo $_GET['Id']; ?>">
-            <button
-              type="submit"
-              name="updateGame"
-              class="px-4 py-2 transition rounded-lg bg-violet-accent hover:bg-violet-700"
-            >
-             Save Changes
-            </button>
-  
-          </div>
+          <button
+            type="button"
+            id="fetchButton"
+            class="bg-violet-accent px-4 py-2 rounded-lg hover:bg-violet-700 transition mt-6"
+          >
+            Fetch
+          </button>
         </div>
+        <!-- Game Genre -->
+        <div>
+          <label for="gameGenre" class="block text-sm font-medium text-gray-400">Genre</label>
+          <input
+            type="text"
+            id="gameGenre"
+            name="new_genre"
+            value="<?php echo $gameById['genre']; ?>"
+            class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-lg p-2 text-white custom-input focus:border-violet-accent focus:ring-violet-accent"
+            required
+          />
+        </div>
+        <!-- Description -->
+        <div>
+          <label for="description" class="block text-sm font-medium text-gray-400">Description</label>
+          <textarea
+            name="new_description"
+            rows="4"
+            class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-lg p-2 text-white custom-input focus:border-violet-accent focus:ring-violet-accent"
+            required
+          ><?php echo $gameById['description']; ?></textarea>
+        </div>
+        <!-- Release Date -->
+        <div>
+          <label for="releaseDate" class="block text-sm font-medium text-gray-400">Release Date</label>
+          <input
+            type="date"
+            id="releaseDate"
+            name="new_releaseDate"
+            value="<?php echo $gameById['release_date']; ?>"
+            class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-lg p-2 text-white custom-input focus:border-violet-accent focus:ring-violet-accent"
+            required
+          />
+        </div>
+        <!-- Image URL -->
+        <div>
+          <label for="background" class="block text-sm font-medium text-gray-400">Image URL</label>
+          <input
+            type="url"
+            id="background"
+            name="new_background"
+            value="<?php echo $gameById['background_url']; ?>"
+            class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-lg p-2 text-white custom-input focus:border-violet-accent focus:ring-violet-accent"
+            required
+          />
+        </div>
+        <!-- Screenshot 1 -->
+        <div>
+          <label for="scrshot1" class="block text-sm font-medium text-gray-400">Screenshot 1 URL</label>
+          <input
+            type="url"
+            id="scrshot1"
+            name="new_scrshot1"
+            value="<?php echo $gameById['screenshot1_url']; ?>"
+            class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-lg p-2 text-white custom-input focus:border-violet-accent focus:ring-violet-accent"
+            required
+          />
+        </div>
+        <!-- Screenshot 2 -->
+        <div>
+          <label for="scrshot2" class="block text-sm font-medium text-gray-400">Screenshot 2 URL</label>
+          <input
+            type="url"
+            id="scrshot2"
+            name="new_scrshot2"
+            value="<?php echo $gameById['screenshot2_url']; ?>"
+            class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-lg p-2 text-white custom-input focus:border-violet-accent focus:ring-violet-accent"
+            required
+          />
+        </div>
+        <!-- Screenshot 3 -->
+        <div>
+          <label for="scrshot3" class="block text-sm font-medium text-gray-400">Screenshot 3 URL</label>
+          <input
+            type="url"
+            id="scrshot3"
+            name="new_scrshot3"
+            value="<?php echo $gameById['screenshot3_url']; ?>"
+            class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-lg p-2 text-white custom-input focus:border-violet-accent focus:ring-violet-accent"
+            required
+          />
+        </div>
+        <!-- Rating -->
+        <div>
+          <label for="rating" class="block text-sm font-medium text-gray-400">Rating</label>
+          <input
+            type="number"
+            id="rating"
+            name="new_rating"
+            value="<?php echo $gameById['rating']; ?>"
+            min="0"
+            max="10"
+            step="0.1"
+            class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-lg p-2 text-white custom-input focus:border-violet-accent focus:ring-violet-accent"
+            required
+          />
+        </div>
+        <!-- Submit Button -->
+        <div class="flex justify-end">
+          <input type="hidden" name="gameId" value="<?php echo $_GET['Id']; ?>">
+          <button
+            type="submit"
+            name="updateGame"
+            class="bg-violet-accent px-4 py-2 rounded-lg hover:bg-violet-700 transition"
+          >
+          Save Changes
+          </button>
+        </div>
+      <?php endif; ?>
       </form>
-  <!-- End Form ------------------------------------------------------------------------------------------------------------->
     </div>
   </div>
-<!-- End Update Game Modul ------------------------------------------------------------------------------------------------------------->
- <?php endif; ?>
+  <?php endif; ?>
+
+<script src="addGameScript.js"></script>
   <script>
     const manageUsersModal = document.getElementById("manageUsersModal");
     const addGameModal = document.getElementById("addGameModal");
+    const updateGameModal = document.getElementById("updateGameModal");
 
     function openModal() {
       manageUsersModal.classList.remove("hidden");

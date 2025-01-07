@@ -2,29 +2,34 @@
 require_once '../Classes/Game.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $gameData = [
-        'title' => $_POST['gameTitle'],
-        'description' => $_POST['description'],
-        'genre' => $_POST['gameGenre'],
-        'releaseDate' => $_POST['releaseDate'],
-        'background' => $_POST['background'],
-        'scrshot1' => $_POST['scrshot1'],
-        'scrshot2' => $_POST['scrshot2'],
-        'scrshot3' => $_POST['scrshot3'],
-        'rating' => $_POST['rating'],
-        'api_id' => $_POST['api_id'] ?? null
-    ];
+    $title = htmlspecialchars($_POST['gameTitle'] ?? '');
+    $description = htmlspecialchars($_POST['description'] ?? '');
+    $genre = htmlspecialchars($_POST['gameGenre'] ?? '');
+    $releaseDate = htmlspecialchars($_POST['releaseDate'] ?? '');
+    $background = htmlspecialchars($_POST['background'] ?? '');
+    $scrshot1 = htmlspecialchars($_POST['scrshot1'] ?? '');
+    $scrshot2 = htmlspecialchars($_POST['scrshot2'] ?? '');
+    $scrshot3 = htmlspecialchars($_POST['scrshot3'] ?? '');
+    $rating = filter_var($_POST['rating'] ?? 0, FILTER_VALIDATE_FLOAT);
 
     $db = new Database();
     $pdo = $db->get_connection();
 
-    $game = new Game($gameData, $pdo );
-    $game->addGame();
+    if ($pdo) {
+      $game = new Game($pdo);
+      $success = $game->addGame($title, $description, $genre, $releaseDate, $background, $scrshot1, $scrshot2, $scrshot3, $rating);
 
-    // Redirect or show success message
-    header('Location: dashboard.php');
-    exit;
+      if ($success) {
+          header('Location: dashboard.php?game-added-successfully');
+          exit;
+      }
+          header('Location: dashboard.php?error');
+          exit;
+    }
 }
+
+$games = Game::getAll();
+
 ?>
 
 <!DOCTYPE html>
@@ -139,6 +144,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-600">
+            <!-- Game 1 -->
+            <?php foreach($games as $game) ?>
             <!-- Game 1 -->
             <tr>
               <td class="px-6 py-4">Game Title 1</td>

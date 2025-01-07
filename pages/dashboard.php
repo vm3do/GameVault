@@ -3,11 +3,10 @@
     require './usersManagement.php';
     require './gameCRUD.php';
 
-    require './Classes/users.php';
+    require '../Classes/users.php';
     $users = new Users($conn);
     $allUsers = $users->getAllUsers();
 
-    // $games = new Game($conn);
     $allGames = Game::getAllGames();
 
 ?>
@@ -17,48 +16,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../css/style.css">
   <title>Admin Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    /* Custom violet accent */
-    .bg-violet-accent {
-      background-color: #7c3aed;
-    }
-    .text-violet-accent {
-      color: #7c3aed;
-    }
-    .border-violet-accent {
-      border-color: #7c3aed;
-    }
-    /* Scrollable modal content with hidden scrollbar */
-    .modal-content {
-      max-height: 70vh; /* 70% of viewport height */
-      overflow-y: auto; /* Enable vertical scrolling */
-      scrollbar-width: none; /* Hide scrollbar for Firefox */
-    }
-    .modal-content::-webkit-scrollbar {
-      display: none; /* Hide scrollbar for Chrome, Safari, and Edge */
-    }
-    /* Custom input focus outline */
-    .custom-input:focus {
-      outline: none;
-      border-color: #7c3aed; /* Violet accent */
-      box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.5); /* Soft glow */
-    }
-    /* Loading spinner */
-    .loader {
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #7c3aed;
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  </style>
+
 </head>
 <body class="bg-gray-900 text-white">
   <!-- Admin Dashboard Container -->
@@ -509,7 +470,7 @@
   </div>
   <?php endif; ?>
 
-<script src="addGameScript.js"></script>
+<script src="../addGameScript.js"></script>
   <script>
     const manageUsersModal = document.getElementById("manageUsersModal");
     const addGameModal = document.getElementById("addGameModal");

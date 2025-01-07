@@ -1,6 +1,6 @@
 <?php
 
-  require_once 'Config/db.php';
+  require_once '../Config/db.php';
   $db = new Database();
   $conn = $db->get_connection();
 

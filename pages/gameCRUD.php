@@ -1,6 +1,6 @@
 <?php
-  require_once 'Config/db.php';
-  require './Classes/Game.php';
+  require_once '../Config/db.php';
+  require '../Classes/Game.php';
   
   $db = new Database();
   $conn = $db->get_connection();

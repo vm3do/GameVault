@@ -5,18 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Settings</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    /* Custom violet accent */
-    .bg-violet-accent {
-      background-color: #7c3aed;
-    }
-    .text-violet-accent {
-      color: #7c3aed;
-    }
-    .border-violet-accent {
-      border-color: #7c3aed;
-    }
-  </style>
+  <link rel="stylesheet" href="../css/style.css">
+
 </head>
 <body class="bg-gray-900 text-white">
   <!-- Settings Container -->

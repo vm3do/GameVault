@@ -3,47 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Homepage</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <title>Home</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    /* Custom violet accent */
-    .bg-violet-accent {
-      background-color: #7c3aed;
-    }
-    .text-violet-accent {
-      color: #7c3aed;
-    }
-    .border-violet-accent {
-      border-color: #7c3aed;
-    }
-    /* GIF background container */
-    .gif-container {
-      position: relative;
-      width: 100%;
-      height: 100vh;
-      overflow: hidden;
-    }
-    /* GIF background */
-    .gif-container img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: -1;
-    }
-    /* Darker overlay */
-    .gif-container::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(11, 2, 26, 0.7); /* Darker overlay */
-    }
-  </style>
+
 </head>
 <body class="text-white bg-gray-900">
   <!-- Header -->
@@ -84,13 +47,13 @@
   </section>
   <script>
     document.getElementById("toLogin").addEventListener("click", function() {
-      window.location.href = "login.php";
+      window.location.href = "./pages/login.php";
     });
     document.getElementById("toSignup").addEventListener("click", function() {
-      window.location.href = "signup.php";
+      window.location.href = "./pages/signup.php";
     });
     document.getElementById("toGames").addEventListener("click", function() {
-      window.location.href = "games.php";
+      window.location.href = "./pages/games.php";
     });
     
   </script>

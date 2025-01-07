@@ -1,10 +1,10 @@
 <?php
 
-  require_once 'Config/db.php';
+  require_once '../Config/db.php';
   $db = new Database();
   $conn = $db->get_connection();
-  
-  require './Classes/users.php';
+
+  require '../Classes/users.php';
   $error = '';
 
   if(isset($_POST['signup'])){
@@ -55,8 +55,8 @@
         else {
             if($return['role'] === 'admin') {
                 session_start();
-                $_SESSION['user_id'] = $return['user_id'];
-                header('Location: dashboard.php');
+                $_SESSION['admin_id'] = $return['user_id'];
+                header('Location: pages/dashboard.php');
                 exit;
             } 
             else {

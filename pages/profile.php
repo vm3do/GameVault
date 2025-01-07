@@ -1,22 +1,30 @@
+<?php 
+  session_start(); 
+  require '../Classes/Game.php'; 
+  require_once '../Config/db.php';
+  $db = new Database();
+  $conn = $db->get_connection();
+
+  $game = new Game($conn);
+  
+      if(isset($_GET['action']) && $_GET['action'] === 'viewDetails' && isset($_GET['userId'])){
+        $userId = $_GET['userId'];
+        $_SESSION['user_id'] = $userId;
+      }
+  
+    
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>User Profile</title>
+  <link rel="stylesheet" href="../css/style.css">
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    /* Custom violet accent */
-    .bg-violet-accent {
-      background-color: #7c3aed;
-    }
-    .text-violet-accent {
-      color: #7c3aed;
-    }
-    .border-violet-accent {
-      border-color: #7c3aed;
-    }
-  </style>
+  
 </head>
 <body class="text-white bg-gray-900">
   <!-- User Profile Container -->
@@ -60,7 +68,7 @@
             <p class="text-gray-400">Status: <span class="text-green-400">In Progress</span></p>
             <p class="text-gray-400">Rating: ⭐⭐⭐⭐☆</p>
             <div class="flex mt-4 space-x-2">
-              <button class="px-4 py-2 transition rounded bg-violet-accent hover:bg-violet-700">View Details</button>
+            <a href="gamedetails.php?action=gameDetails&userId=<?php echo $_SESSION['user_id']; ?>&gameId=11" class="px-4 py-2 transition rounded bg-violet-accent hover:bg-violet-700">View Details</a>
               <button class="px-4 py-2 transition bg-red-500 rounded hover:bg-red-600">Remove</button>
             </div>
           </div>

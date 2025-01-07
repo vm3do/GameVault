@@ -1,5 +1,5 @@
 <?php
-    require './auth.php';
+      require 'auth.php';
 ?>
 
 <!DOCTYPE html>
@@ -7,19 +7,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../css/style.css">
   <title>Login</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    .bg-violet-accent {
-      background-color: #7c3aed;
-    }
-    .text-violet-accent {
-      color: #7c3aed;
-    }
-    .border-violet-accent {
-      border-color: #7c3aed;
-    }
-  </style>
+
 </head>
 <body class="text-white bg-gray-900">
   <!-- Login Container -->

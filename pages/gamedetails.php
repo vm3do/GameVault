@@ -1,3 +1,27 @@
+<?php 
+  session_start(); 
+  require '../Classes/Game.php'; 
+  require_once '../Config/db.php';
+  $db = new Database();
+  $conn = $db->get_connection();
+
+  $game = new Game($conn);
+  
+      if(isset($_GET['action']) && $_GET['action'] === 'gameDetails' && isset($_GET['gameId']) && isset($_GET['userId'])){
+        $gameId = $_GET['gameId'];
+        $userId = $_GET['userId'];
+
+        $_SESSION['gameId'] = $gameId;
+        $_SESSION['user_id'] = $userId;
+
+        $gameDetails = $game->getGameById($gameId);
+      
+      }
+  
+    
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,18 +29,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Game Details</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    /* Custom violet accent */
-    .bg-violet-accent {
-      background-color: #7c3aed;
-    }
-    .text-violet-accent {
-      color: #7c3aed;
-    }
-    .border-violet-accent {
-      border-color: #7c3aed;
-    }
-  </style>
+  <link rel="stylesheet" href="../css/style.css">
+
 </head>
 <body class="bg-gray-900 text-white">
   <!-- Game Details Container -->
@@ -26,38 +40,42 @@
       <h1 class="text-2xl font-bold">Game Details</h1>
     </header>
     <!-- Game Information Section -->
+
     <section class="bg-gray-800 p-6 rounded-lg mb-6">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Game Image -->
+        <?php foreach($gameDetails as $game): ?>
         <div>
-          <img src="https://via.placeholder.com/600x400" alt="Game Image" class="w-full rounded-lg">
+          <img src="<?php echo $game['background_url'] ?>" alt="Game Image" class="w-full rounded-lg">
         </div>
         <!-- Game Details -->
         <div>
-          <h2 class="text-2xl font-bold">Game Title</h2>
-          <p class="text-gray-400">Release Date: January 1, 2023</p>
-          <p class="text-gray-400">Genre: Action</p>
+        
+          <h2 class="text-2xl font-bold"><?php echo $game['title'] ?></h2>
+          <p class="text-gray-400">Release Date: <?php echo $game['release_date']  ?></p>
+          <p class="text-gray-400">Genre:  <?php echo $game['genre']  ?></p>
           <p class="text-gray-400">Developer: Game Studio</p>
           <p class="text-gray-400">Rating: ⭐⭐⭐⭐☆</p>
           <p class="text-gray-400 mt-4">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          <?php echo $game['description']  ?>
           </p>
+          <?php endforeach; ?>
           <!-- Buttons -->
           <div class="mt-6 flex flex-wrap gap-2">
             <!-- Add to Library (Primary) -->
             <button class="bg-violet-accent px-4 py-2 rounded hover:bg-violet-700 transition">
               Add to Library
-            </button>
+            </button> 
             <!-- Add to Favorites (Secondary) -->
             <button class="bg-gray-700 px-4 py-2 rounded hover:bg-gray-600 transition">
               Add to Favorites
             </button>
             <!-- Access Chat (Icon) -->
-            <button class="bg-gray-700 p-2 rounded hover:bg-gray-600 transition">
+            <a href="chat.php?action=chat&userId=<?php echo $_SESSION['user_id'] ; ?>&userId=2" class="bg-gray-700 p-2 rounded hover:bg-gray-600 transition">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
-            </button>
+            </a>
           </div>
         </div>
       </div>

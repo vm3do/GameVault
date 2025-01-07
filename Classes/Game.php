@@ -1,5 +1,6 @@
 <?php 
-
+  require_once '../Config/db.php';
+  
 class Game {
   private $title;
   private $description;
@@ -108,7 +109,7 @@ class Game {
       $sql = "SELECT * FROM games WHERE id = :id";
       $stmt = $this->pdo->prepare($sql);
       $stmt->execute([':id' => $id]);
-      return $stmt->fetch(PDO::FETCH_ASSOC);
+      return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     catch(PDOException $e) {
       die("Erreur : " . $e->getMessage());

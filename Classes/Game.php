@@ -59,6 +59,33 @@ class Game {
         }
     }
 
-    public static function getstats
+    public static function getStats() {
+        try {
+            $db = new Database();
+            $conn = $db->connect();
+            $totalGames = "SELECT COUNT(*) as total_games FROM games";
+            $totalUsers = "SELECT COUNT(*) as total_users, SUM(CASE WHEN status = 'banned' THEN 1 ELSE 0 END) as banned FROM users";
+            // $totalBanned = "SELECT COUNT(*) as banned_users FROM users";
+
+            $stmt_1 = $conn->prepare($totalGames);
+            $stmt_2 = $conn->prepare($totalUsers);
+
+            $stmt_1->execute();
+            $stmt_2->execute();
+
+            $allGames = $stmt_1->fetch(PDO::FETCH_ASSOC);
+            $allUsers = $stmt_2->fetch(PDO::FETCH_ASSOC);
+
+            return [
+                'total_Games' => $allGames['total_games'] ?? 0,
+                'total_Users' => $allUers['total_users'] ?? 0,
+                'total_banned' => $allUers['banned'] ?? 0
+            ];
+        } catch (PDOException $e) {
+            error_log("Error : " . $e->getMessage());
+            return false;
+        }
+
+    }
 
 }

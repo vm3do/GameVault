@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $games = Game::getAll();
-
+$stats = Game::getStats();
 ?>
 
 <!DOCTYPE html>
@@ -92,17 +92,19 @@ $games = Game::getAll();
       <!-- Total Games -->
       <div class="bg-gray-800 p-6 rounded-lg">
         <h3 class="text-gray-400">Total Games</h3>
-        <p class="text-2xl font-bold">120</p>
+        <p class="text-2xl font-bold">
+          <?php echo $stats['total_Games']?>
+        </p>
       </div>
       <!-- Total Users -->
       <div class="bg-gray-800 p-6 rounded-lg">
         <h3 class="text-gray-400">Total Users</h3>
-        <p class="text-2xl font-bold">1,234</p>
+        <p class="text-2xl font-bold"><?php echo $stats['total_Users']?></p>
       </div>
       <!-- Active Chats -->
       <div class="bg-gray-800 p-6 rounded-lg">
         <h3 class="text-gray-400">Active Chats</h3>
-        <p class="text-2xl font-bold">56</p>
+        <p class="text-2xl font-bold"><?php echo $stats['total_banned']?></p>
       </div>
     </section>
     <!-- Action Buttons -->

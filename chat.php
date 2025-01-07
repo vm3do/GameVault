@@ -1,19 +1,23 @@
 <?php 
-  require 'Classes/Game.php';
+      require_once 'Config/db.php';
+      $db = new Database();
+      $conn = $db->get_connection();
 
-  $user_id = 7;
-  $game_id = 16;
+      require './Classes/Game.php';
 
-  if(isset($_POST['sendMessage'])) {
-     $message = $_POST['message'];
-     $sql = "INSERT INTO chats (user_id, game_id, message) VALUES (:user_id,:game_id, :message)";
-     $stmt = $conn->prepare($sql);
-     $stmt->execute(['user_id' => $user_id,'game_id' => $game_id, 'message' => $message]);
-     header('Location: ' . $_SERVER['PHP_SELF']);
-  }
+    $user_id = 2;
+    $game_id = 9;
 
-  $game = new Game($conn);  
-  $result = $game->chats();
+    if(isset($_POST['sendMessage'])) {
+      $message = $_POST['message'];
+      $sql = "INSERT INTO chats (user_id, game_id, message) VALUES (:user_id,:game_id, :message)";
+      $stmt = $conn->prepare($sql);
+      $stmt->execute(['user_id' => $user_id,'game_id' => $game_id, 'message' => $message]);
+      header('Location: ' . $_SERVER['PHP_SELF']);
+    }
+
+    $game = new Game($conn);  
+    $result = $game->chats();
 
 ?>
 
@@ -24,7 +28,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chat</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
+  <style> 
     /* Custom violet accent */
     .bg-violet-accent {
       background-color: #7c3aed;

@@ -1,5 +1,5 @@
 <?php
-    require './Classes/users.php';
+      require './auth.php';
 ?>
 
 <!DOCTYPE html>

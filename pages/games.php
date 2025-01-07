@@ -129,10 +129,10 @@ $games = Game::getAll();
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         <?php foreach ($games as $game): ?>
             <div class="bg-gray-800 rounded-lg overflow-hidden shadow-lg">
-                <img src="<?= $game->getBackground() ?>" alt="Game Image" class="w-full h-48 object-cover">
+                <img src="<?= $game['background'] ?>" alt="Game Image" class="w-full h-48 object-cover">
                 <div class="p-4">
-                    <h2 class="text-xl font-bold mb-2"><?= $game->getTitle() ?></h2>
-                    <p class="text-gray-400 mb-4">Genre: <?= $game->getGenre() ?> | Release Date: <?= $game->getReleaseDate() ?></p>
+                    <h2 class="text-xl font-bold mb-2"><?= $game['title'] ?></h2>
+                    <p class="text-gray-400 mb-4">Genre: <?= $game['genre'] ?> | Release Date: <?= $game['release_date'] ?></p>
                     <button class="bg-violet-accent w-full px-4 py-2 rounded-lg hover:bg-violet-700 transition">
                         View Details
                     </button>

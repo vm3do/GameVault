@@ -117,11 +117,11 @@ class Game {
     }  
   }
 
-  public function chats() {
+  public function chats($id) {
     try{
-        $sql = "SELECT u.username, c.message, c.time FROM chats c JOIN users u ON c.user_id = u.id";
+        $sql = "SELECT u.username, c.message, c.time FROM chats c JOIN users u ON c.user_id = u.id WHERE c.user_id = :user_id";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
+        $stmt->execute([':user_id'=> $id]);
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;
       }

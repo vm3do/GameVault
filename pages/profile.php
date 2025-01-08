@@ -2,6 +2,7 @@
   session_start(); 
   require '../Classes/Game.php'; 
   require_once '../Config/db.php';
+  
   $db = new Database();
   $conn = $db->get_connection();
 
@@ -12,7 +13,6 @@
         $_SESSION['user_id'] = $userId;
       }
   
-    
 ?>
 
 

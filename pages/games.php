@@ -108,7 +108,7 @@ $games = Game::getAllGames();
                     <h2 class="text-xl font-bold mb-2"><?= $game['title'] ?></h2>
                     <p class="text-gray-400 mb-4">Genre: <?= $game['genre'] ?> | Release Date: <?= $game['release_date'] ?></p>
             
-                    <a href="gamedetails.php?action=gameDetails&gameId=<?php echo $game['id']; ?>&userId=2" class="bg-violet-accent w-full px-4 py-2 rounded-lg hover:bg-violet-700 transition">View Details</a>
+                    <a href="gamedetails.php?action=gameDetails&gameId=<?php echo $game['id']; ?>&userId=3" class="bg-violet-accent w-full px-4 py-2 rounded-lg hover:bg-violet-700 transition">View Details</a>
                 </div>
             </div>
         <?php endforeach; ?>
@@ -140,3 +140,4 @@ $games = Game::getAllGames();
   </script>
 </body>
 </html>
+

@@ -1,8 +1,22 @@
 <?php 
+  require_once '../Classes/User.php';
+  session_start();
 
-  // if(!isset($_SESSION['admin_id']) || !isset($_SESSION['user_id'])) {
-  //   header('Location: login.php');
-  // }
+  $_SESSION['user_id'] = 1;
+  $user_id = $_SESSION['user_id'];
+
+  if(!isset($_SESSION['admin_id']) && !isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit();
+  }
+
+  if(isset($_GET['game_id']) && ( isset($_SESSION['admin_id']) || isset($_SESSION['user_id']) )){
+    $db = new Database();
+    $pdo = $db->connect();
+    $user = new User($pdo);
+
+    $add = $user->addToLibrary($user_id, $_GET['game_id']);
+  }
 
 ?>
 
@@ -53,8 +67,8 @@
           <!-- Buttons -->
           <div class="mt-6 flex flex-wrap gap-2">
             <!-- Add to Library (Primary) -->
-            <form action="gamedetails" method="GET">
-              <input id =  hidden >
+            <form action="gamedetails.php" method="GET">
+              <input type="hidden" name='game_id' value= <?= $_GET['id'] ?>>
               <button type="submit" class="bg-violet-accent px-4 py-2 rounded hover:bg-violet-700 transition">
                 Add to Library
               </button>

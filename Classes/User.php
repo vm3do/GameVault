@@ -12,21 +12,33 @@
         public function addToLibrary($user_id, $game_id){
 
             try {
-                $query = "INSERT INTO library (user_id, game_id) VALUES (:user_id, :game_id);";
+                $query = "SELECT * FROM library where game_id = :game_id AND user_id = :user_id;";
                 $stmt = $this->pdo->prepare($query);
                 $stmt->execute([
-                ':user_id' => $user_id,
-                ':game_id' => $game_id
+                    ':game_id' => $game_id,
+                    ':user_id' => $user_id
                 ]);
 
-                return true;
-            }
-            catch(PDOException $e) {
-                error_log("Error : " . $e->getMessage());
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if(!$row){
+                    $query = "INSERT INTO library (user_id, game_id) VALUES (:user_id, :game_id);";
+                    $stmt = $this->pdo->prepare($query);
+                    $stmt->execute([
+                        ':user_id'=> $user_id,
+                        ':game_id'=> $game_id
+                    ]);
+
+                    return true;
+                }
                 return false;
             }
-
-        }
+            catch(PDOException $e) {
+                error_log("Error in adding to Lib : " . $e->getMessage());
+                return false;
+            }
+            
+        } 
 
         public static function getLibraryGames($user_id){
             try {

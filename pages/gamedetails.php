@@ -1,3 +1,11 @@
+<?php 
+
+  // if(!isset($_SESSION['admin_id']) || !isset($_SESSION['user_id'])) {
+  //   header('Location: login.php');
+  // }
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,16 +53,19 @@
           <!-- Buttons -->
           <div class="mt-6 flex flex-wrap gap-2">
             <!-- Add to Library (Primary) -->
-            <button class="bg-violet-accent px-4 py-2 rounded hover:bg-violet-700 transition">
-              Add to Library
-            </button>
+            <form action="gamedetails" method="GET">
+              <input id =  hidden >
+              <button type="submit" class="bg-violet-accent px-4 py-2 rounded hover:bg-violet-700 transition">
+                Add to Library
+              </button>
+            </form>
             <!-- Add to Favorites (Secondary) -->
             <button class="bg-gray-700 px-4 py-2 rounded hover:bg-gray-600 transition">
               Add to Favorites
             </button>
             <!-- Access Chat (Icon) -->
             <button class="bg-gray-700 p-2 rounded hover:bg-gray-600 transition">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg"  class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
             </button>

@@ -3,19 +3,9 @@
 require_once '../Config/Db.php';
 
 class Game {
-    private $title;
-    private $description;
-    private $genre;
-    private $releaseDate;
-    private $background;  // Main image URL
-    private $scrshot1;   // Screenshot 1
-    private $scrshot2;   // Screenshot 2
-    private $scrshot3;   // Screenshot 3
-    private $rating;
+    
     private $pdo;
-    private $id;
 
-    // Constructor
     public function __construct($conn) {
         $this->pdo = $conn;
     }
@@ -38,10 +28,10 @@ class Game {
             ]);
             return true;
         }
-        catch(PDOException $e) {
-            die("Erreur : " . $e->getMessage());
-            return false;
-        }
+            catch(PDOException $e) {
+                die("Erreur : " . $e->getMessage());
+                return false;
+            }
         }
 
     public static function getAll() {
@@ -65,7 +55,6 @@ class Game {
             $conn = $db->connect();
             $totalGames = "SELECT COUNT(*) as total_games FROM games";
             $totalUsers = "SELECT COUNT(*) as total_users, SUM(CASE WHEN status = 'banned' THEN 1 ELSE 0 END) as banned FROM users";
-            // $totalBanned = "SELECT COUNT(*) as banned_users FROM users";
 
             $stmt_1 = $conn->prepare($totalGames);
             $stmt_2 = $conn->prepare($totalUsers);

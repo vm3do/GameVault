@@ -133,7 +133,7 @@ $games = Game::getAll();
             <div class="p-4">
                 <h2 class="text-xl font-bold mb-2"><?= $game['title'] ?></h2>
                 <p class="text-gray-400 mb-4">Genre: <?= $game['genre'] ?> | Release Date: <?= $game['release_date'] ?></p>
-                <a href="gamedetails.php?id=<?= $game['id'] ?>" class="block bg-violet-accent w-full px-4 py-2 rounded-lg hover:bg-violet-700 transition text-center">
+                <a href="gamedetails.php?game_id=<?= $game['id'] ?>" class="block bg-violet-accent w-full px-4 py-2 rounded-lg hover:bg-violet-700 transition text-center">
                     View Details
                 </a>
             </div>
@@ -151,12 +151,12 @@ $games = Game::getAll();
     let currentIndex = 0;
 
     function nextSlide() {
-      currentIndex = (currentIndex + 1) % 3; // Adjust based on the number of slides
+      currentIndex = (currentIndex + 1) % 3;
       updateCarousel();
     }
 
     function prevSlide() {
-      currentIndex = (currentIndex - 1 + 3) % 3; // Adjust based on the number of slides
+      currentIndex = (currentIndex - 1 + 3) % 3;
       updateCarousel();
     }
 

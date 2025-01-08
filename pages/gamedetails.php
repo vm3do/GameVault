@@ -1,22 +1,66 @@
 <?php 
   require_once '../Classes/User.php';
-  session_start();
+  require_once '../Classes/Game.php';
 
-  $_SESSION['user_id'] = 1;
-  $user_id = $_SESSION['user_id'];
+  // session_start();
 
-  if(!isset($_SESSION['admin_id']) && !isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit();
-  }
+  // $_SESSION['user_id'] = 1;
+  // $user_id = $_SESSION['user_id'];
 
-  if(isset($_GET['game_id']) && ( isset($_SESSION['admin_id']) || isset($_SESSION['user_id']) )){
-    $db = new Database();
-    $pdo = $db->connect();
-    $user = new User($pdo);
+  // if(!isset($_SESSION['admin_id']) && !isset($_SESSION['user_id'])) {
+  //   header('Location: login.php');
+  //   exit();
+  // }
 
-    $add = $user->addToLibrary($user_id, $_GET['game_id']);
-  }
+  //   $db = new Database();
+  //   $pdo = $db->connect();
+  //   $user = new User($pdo);
+
+  // if(isset($_GET['game_id']) && ( isset($_SESSION['admin_id']) || isset($_SESSION['user_id']) )){
+  //   $game_id = $_GET['game_id'];
+  //   $add = $user->addToLibrary($user_id, $game_id);
+
+  // }
+
+
+// Start the session
+// session_start();
+
+// // Check if the user is logged in
+// if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
+//     header('Location: login.php');
+//     exit();
+// }
+
+// Get the logged-in user's ID
+$user_id = $_SESSION['user_id'] = 1;
+
+$db = new Database();
+$pdo = $db->connect();
+$user = new User($pdo);
+
+if(isset($_GET['game_id'])){
+  $game_id = $_GET['game_id'];
+}
+$game_id = $game_id ?? null;
+
+if (isset($_GET['add_library'])) {
+
+    $game_id = filter_var($_GET['add_library'], FILTER_SANITIZE_NUMBER_INT);
+
+    if ($game_id) {
+
+        $add = $user->addToLibrary($user_id, $game_id);
+        
+        if ($add) {
+          header('Location: gamedetails.php?Game-added');
+            exit();
+        } else {
+          header('Location: gamedetails.php?Game-not-added');
+          exit();
+        }
+    } 
+}
 
 ?>
 
@@ -68,15 +112,18 @@
           <div class="mt-6 flex flex-wrap gap-2">
             <!-- Add to Library (Primary) -->
             <form action="gamedetails.php" method="GET">
-              <input type="hidden" name='game_id' value= <?= $_GET['id'] ?>>
+              <input type="hidden" name='add_library' value="<?= $game_id; ?>">
               <button type="submit" class="bg-violet-accent px-4 py-2 rounded hover:bg-violet-700 transition">
-                Add to Library
+                Add to Library 
               </button>
             </form>
             <!-- Add to Favorites (Secondary) -->
-            <button class="bg-gray-700 px-4 py-2 rounded hover:bg-gray-600 transition">
+            <form action="gamedetails.php" method="GET">
+              <input type="hidden" name='add_favorite' value="<?= $game_id; ?>">
+              <button class="bg-gray-700 px-4 py-2 rounded hover:bg-gray-600 transition">
               Add to Favorites
             </button>
+            </form>
             <!-- Access Chat (Icon) -->
             <button class="bg-gray-700 p-2 rounded hover:bg-gray-600 transition">
               <svg xmlns="http://www.w3.org/2000/svg"  class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

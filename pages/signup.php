@@ -72,7 +72,7 @@
       </form>
       <!-- Login Link -->
       <p class="text-gray-400 mt-6 text-center">
-        Already have an account? <a href="login.html" class="text-violet-accent hover:underline">Login</a>
+        Already have an account? <a href="login.php" class="text-violet-accent hover:underline">Login</a>
       </p>
     </div>
   </div>

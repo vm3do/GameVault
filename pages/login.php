@@ -54,7 +54,7 @@
       </form>
       <!-- Sign Up Link -->
       <p class="text-gray-400 mt-6 text-center">
-        Don't have an account? <a href="signup.html" class="text-violet-accent hover:underline">Sign Up</a>
+        Don't have an account? <a href="signup.php" class="text-violet-accent hover:underline">Sign Up</a>
       </p>
     </div>
   </div>

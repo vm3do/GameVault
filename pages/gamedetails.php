@@ -16,25 +16,28 @@ if(isset($_SESSION['user_id'])){
 $db = new Database();
 $pdo = $db->connect();
 $user = new User($pdo);
+$Game = new Game($pdo);
 
-if(isset($_GET['game_id'])){
-  $game_id = $_GET['game_id'];
+if(!isset($_GET['game_id']) || $_GET['game_id'] === "" ){
+  header('Location: games.php');
+  exit();
 }
-$game_id = $game_id ?? null;
+$game_id = $_GET['game_id'] ?? null;
+$gameDetails = $Game->getGameById($game_id);
 
 if (isset($_GET['add_library']) && (isset($_SESSION['user_id']) || isset($_SESSION['admin_id']))) {
 
-    $game_id = filter_var($_GET['add_library'], FILTER_SANITIZE_NUMBER_INT);
+    $game_filter = filter_var($_GET['add_library'], FILTER_SANITIZE_NUMBER_INT);
 
     if ($game_id) {
 
         $add = $user->addToLibrary($user_id, $game_id);
         
         if ($add) {
-          header('Location: gamedetails.php?Game-added');
+          header('Location: gamedetails.php?game_id=' . $game_id . '&status=Game-added');
             exit();
         } else {
-          header('Location: gamedetails.php?Game-not-added');
+          header('Location: gamedetails.php?game_id=' . $game_id . '&status=Game-Not-added');
           exit();
         }
     } 
@@ -74,25 +77,26 @@ if (isset($_GET['add_library']) && (isset($_SESSION['user_id']) || isset($_SESSI
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Game Image -->
         <div>
-          <img src="https://via.placeholder.com/600x400" alt="Game Image" class="w-full rounded-lg">
+          <img src="<?= $gameDetails['background']?>" alt="Game Image" class="w-full rounded-lg">
         </div>
         <!-- Game Details -->
         <div>
-          <h2 class="text-2xl font-bold">Game Title</h2>
-          <p class="text-gray-400">Release Date: January 1, 2023</p>
-          <p class="text-gray-400">Genre: Action</p>
-          <p class="text-gray-400">Developer: Game Studio</p>
+          <h2 class="text-2xl font-bold"><?= $gameDetails['title']?></h2>
+          <p class="text-gray-400">Release Date: <?= $gameDetails['release_date']?></p>
+          <p class="text-gray-400">Genre: <?= $gameDetails['genre']?></p>
+          <!-- <p class="text-gray-400">Developer: Game Studio</p> -->
           <p class="text-gray-400">Rating: ⭐⭐⭐⭐☆</p>
           <p class="text-gray-400 mt-4">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          <?= $gameDetails['description']?>
           </p>
           <!-- Buttons -->
           <div class="mt-6 flex flex-wrap gap-2">
             <!-- Add to Library (Primary) -->
             <form action="gamedetails.php" method="GET">
-              <input type="hidden" name='add_library' value="<?= $game_id; ?>">
-              <button type="submit" class="bg-violet-accent px-4 py-2 rounded hover:bg-violet-700 transition">
-                Add to Library 
+              <!-- <input type="hidden" name='add_library' value="<?= $game_id; ?>"> -->
+              <input type="hidden" name='game_id' value="<?= $game_id; ?>">
+              <button type="submit" name='add_library' class="bg-violet-accent px-4 py-2 rounded hover:bg-violet-700 transition">
+                Add to Library
               </button>
             </form>
             <!-- Add to Favorites (Secondary) -->

@@ -1,3 +1,13 @@
+<?php 
+
+require_once '../Classes/User.php';
+session_start();
+
+  $games = User::getLibraryGames($_SESSION['user_id']);
+  print_r($games);
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,6 +29,7 @@
   </style>
 </head>
 <body class="bg-gray-900 text-white">
+  <?php print_r($games);?>
   <!-- User Profile Container -->
   <div class="flex flex-col min-h-screen p-6">
     <!-- Header -->
@@ -52,12 +63,15 @@
       <h2 class="text-2xl font-bold mb-4">Game Library</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Game Card 1 -->
-        <div class="bg-gray-700 rounded-lg overflow-hidden shadow-lg">
-          <img src="https://via.placeholder.com/400x200" alt="Game Image" class="w-full h-48 object-cover">
+        <?php foreach($games as $game): ?>
+          
+
+          <div class="bg-gray-700 rounded-lg overflow-hidden shadow-lg">
+          <img src="<?= $game['background']?>" alt="Game Image" class="w-full h-48 object-cover">
           <div class="p-4">
-            <h3 class="text-lg font-bold">Game Title 1</h3>
-            <p class="text-gray-400">Genre: Action</p>
-            <p class="text-gray-400">Status: <span class="text-green-400">In Progress</span></p>
+            <h3 class="text-lg font-bold"><?= $game['title']?></h3>
+            <p class="text-gray-400">Genre: <?= $game['genre']?></p>
+            <p class="text-gray-400">Status: <span class="text-green-400"><?= $game['game_status']?></span></p>
             <p class="text-gray-400">Rating: ⭐⭐⭐⭐☆</p>
             <div class="mt-4 flex space-x-2">
               <button class="bg-violet-accent px-4 py-2 rounded hover:bg-violet-700 transition">View Details</button>
@@ -65,6 +79,9 @@
             </div>
           </div>
         </div>
+          
+          
+        <?php endforeach; ?>
         <!-- Add more game cards here -->
       </div>
     </section>

@@ -2,38 +2,16 @@
   require_once '../Classes/User.php';
   require_once '../Classes/Game.php';
 
-  // session_start();
+  session_start();
 
-  // $_SESSION['user_id'] = 1;
-  // $user_id = $_SESSION['user_id'];
+  if(!isset($_SESSION['admin_id']) && !isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit();
+  }
 
-  // if(!isset($_SESSION['admin_id']) && !isset($_SESSION['user_id'])) {
-  //   header('Location: login.php');
-  //   exit();
-  // }
-
-  //   $db = new Database();
-  //   $pdo = $db->connect();
-  //   $user = new User($pdo);
-
-  // if(isset($_GET['game_id']) && ( isset($_SESSION['admin_id']) || isset($_SESSION['user_id']) )){
-  //   $game_id = $_GET['game_id'];
-  //   $add = $user->addToLibrary($user_id, $game_id);
-
-  // }
-
-
-// Start the session
-// session_start();
-
-// // Check if the user is logged in
-// if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
-//     header('Location: login.php');
-//     exit();
-// }
-
-// Get the logged-in user's ID
-$user_id = $_SESSION['user_id'] = 1;
+if(isset($_SESSION['user_id'])){
+  $user_id = $_SESSION['user_id'];
+}
 
 $db = new Database();
 $pdo = $db->connect();
@@ -44,7 +22,7 @@ if(isset($_GET['game_id'])){
 }
 $game_id = $game_id ?? null;
 
-if (isset($_GET['add_library'])) {
+if (isset($_GET['add_library']) && (isset($_SESSION['user_id']) || isset($_SESSION['admin_id']))) {
 
     $game_id = filter_var($_GET['add_library'], FILTER_SANITIZE_NUMBER_INT);
 

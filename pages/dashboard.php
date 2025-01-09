@@ -40,7 +40,6 @@ $stats = Game::getStats();
   <title>Admin Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Custom violet accent */
     .bg-violet-accent {
       background-color: #7c3aed;
     }
@@ -50,22 +49,19 @@ $stats = Game::getStats();
     .border-violet-accent {
       border-color: #7c3aed;
     }
-    /* Scrollable modal content with hidden scrollbar */
     .modal-content {
-      max-height: 70vh; /* 70% of viewport height */
-      overflow-y: auto; /* Enable vertical scrolling */
-      scrollbar-width: none; /* Hide scrollbar for Firefox */
+      max-height: 70vh;
+      overflow-y: auto;
+      scrollbar-width: none;
     }
     .modal-content::-webkit-scrollbar {
-      display: none; /* Hide scrollbar for Chrome, Safari, and Edge */
+      display: none;
     }
-    /* Custom input focus outline */
     .custom-input:focus {
       outline: none;
-      border-color: #7c3aed; /* Violet accent */
-      box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.5); /* Soft glow */
+      border-color: #7c3aed;
+      box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.5);
     }
-    /* Loading spinner */
     .loader {
       border: 4px solid #f3f3f3;
       border-top: 4px solid #7c3aed;

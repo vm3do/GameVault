@@ -6,7 +6,7 @@
   <title>Chat</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Custom violet accent */
+    
     .bg-violet-accent {
       background-color: #7c3aed;
     }

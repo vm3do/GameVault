@@ -91,7 +91,22 @@
                 error_log("Error in adding to Lib : " . $e->getMessage());
                 return false;
             }
+        }
 
+        public function removeFromLib($game_id){
+
+            try {
+                $query = "DELETE FROM library WHERE game_id = :game_id";
+                $stmt = $this->pdo->prepare($query);
+                $stmt->execute([
+                    ':game_id' => $game_id,
+                ]);
+                return true;
+            }
+            catch(PDOException $e) {
+                error_log("Error in adding to Lib : " . $e->getMessage());
+                return ['Erreur: ' => 'not deleted'];
+            }
         }
 
         public static function getLibraryGames($user_id){

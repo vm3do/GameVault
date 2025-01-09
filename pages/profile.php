@@ -4,7 +4,16 @@ require_once '../Classes/User.php';
 session_start();
 
   $games = User::getLibraryGames($_SESSION['user_id']);
-  print_r($games);
+
+  $db = new Database();
+  $pdo = $db->connect();
+
+  $user = new User($pdo);
+  if(isset($_GET['remove'])){
+    $user->removeFromLib($_GET['remove']);
+    header('Location: profile.php?game-removed');
+    exit();
+  }
 
 ?>
 
@@ -75,7 +84,9 @@ session_start();
             <p class="text-gray-400">Rating: ⭐⭐⭐⭐☆</p>
             <div class="mt-4 flex space-x-2">
               <button class="bg-violet-accent px-4 py-2 rounded hover:bg-violet-700 transition">View Details</button>
-              <button class="bg-red-500 px-4 py-2 rounded hover:bg-red-600 transition">Remove</button>
+              <form action="profile.php" method="GET">
+                <button type=submit name="remove" value="<?= $game['game_id']?>" class="bg-red-500 px-4 py-2 rounded hover:bg-red-600 transition">Remove</button>
+              </form>
             </div>
           </div>
         </div>

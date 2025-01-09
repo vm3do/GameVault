@@ -1,22 +1,31 @@
 <?php 
   session_start(); 
+
   require '../Classes/Game.php'; 
+  require '../Classes/Users.php';
   require_once '../Config/db.php';
+
+
+  if(!isset($_POST['gameDetails']) && !isset($_POST['user_id']) && !isset($_POST['game_id'])) {
+    header('Location: login.php');
+    exit();
+  }
+  else{
+    $_SESSION['gameId'] = $_POST['game_id'];
+    $_SESSION['userId'] = $_POST['user_id'];
+  }
+
+  $user_id = $_SESSION['userId'];
+  $game_id = $_SESSION['gameId'];
+
   $db = new Database();
-  $conn = $db->get_connection();
+  $pdo = $db->get_connection();
+    
+  $game = new Game($pdo);
+  $gameDetails = $game->getGameById($game_id);
 
-  $game = new Game($conn);
-  
-      if(isset($_GET['action']) && $_GET['action'] === 'gameDetails' && isset($_GET['gameId']) && isset($_GET['userId'])){
-        $gameId = $_GET['gameId'];
-        $userId = $_GET['userId'];
-
-        $_SESSION['gameId'] = $gameId;
-        $_SESSION['userId'] = $userId;
-
-        $gameDetails = $game->getGameById($gameId);
-      
-      }
+  $user = new Users($pdo);
+  $add = $user->addToLibrary($user_id, $game_id);
   
     
 ?>
@@ -71,10 +80,17 @@
               Add to Favorites
             </button>
             <!-- Access Chat (Icon) -->
-            <a href="chat.php?action=chat&gameId=<?php echo $_SESSION['gameId'];?>&userId=<?php echo $_SESSION['userId'];?>" class="bg-gray-700 p-2 rounded hover:bg-gray-600 transition">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
+            <form action="chat.php" method="POST">
+                <input type="hidden" name='user_id' value= "<?php echo $user_id; ?>">
+                <input type="hidden" name='game_id' value= "<?php echo $game_id;?>" >
+                <button type="submit" class="bg-gray-700 p-2 rounded hover:bg-gray-600 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+                </button>
+            </form>
+
+              
             </a>
           </div>
         </div>

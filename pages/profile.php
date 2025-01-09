@@ -1,18 +1,6 @@
 <?php 
   session_start(); 
-  require '../Classes/Game.php'; 
-  require_once '../Config/db.php';
-  
-  $db = new Database();
-  $conn = $db->get_connection();
 
-  $game = new Game($conn);
-  
-      if(isset($_GET['action']) && $_GET['action'] === 'viewDetails' && isset($_GET['userId'])){
-        $userId = $_GET['userId'];
-        $_SESSION['user_id'] = $userId;
-      }
-  
 ?>
 
 
@@ -68,7 +56,14 @@
             <p class="text-gray-400">Status: <span class="text-green-400">In Progress</span></p>
             <p class="text-gray-400">Rating: ⭐⭐⭐⭐☆</p>
             <div class="flex mt-4 space-x-2">
-            <a href="gamedetails.php?action=gameDetails&userId=<?php echo $_SESSION['user_id']; ?>&gameId=11" class="px-4 py-2 transition rounded bg-violet-accent hover:bg-violet-700">View Details</a>
+            <form action="gamedetails.php" method="POST">
+              <input type="hidden" name='user_id' value= "<?php echo $_SESSION['user_id']; ?>">
+              <input type="hidden" name='game_id' value= "12" >
+              <button type="submit"class="px-4 py-2 transition rounded bg-violet-accent hover:bg-violet-700">
+                View Details
+              </button>
+            </form>
+      
               <button class="px-4 py-2 transition bg-red-500 rounded hover:bg-red-600">Remove</button>
             </div>
           </div>

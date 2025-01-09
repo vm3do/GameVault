@@ -56,7 +56,7 @@
             if($return['role'] === 'admin') {
                 session_start();
                 $_SESSION['admin_id'] = $return['user_id'];
-                header('Location: pages/dashboard.php');
+                header('Location: dashboard.php');
                 exit;
             } 
             else {

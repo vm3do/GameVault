@@ -1,29 +1,33 @@
 <?php 
       session_start(); 
       require_once '../Config/db.php';
+
       $db = new Database();
       $conn = $db->get_connection();
       
       require '../Classes/Game.php';
- 
-      if(isset($_GET['action']) && $_GET['action'] === 'chat' && isset($_GET['gameId']) && isset($_GET['userId'])){
-        $_SESSION['gameId'] = $_GET['gameId'];
-        $_SESSION['userId'] = $_GET['userId'];
+    
+      if(!isset($_POST['chat']) && !isset($_POST['user_id']) && !isset($_POST['game_id'])) {
+        header('Location: login.php');
+        exit();
       }
+      else{
+        $_SESSION['gameId'] = $_POST['game_id'];
+        $_SESSION['userId'] = $_POST['user_id'];
+      }
+      $user_id = $_SESSION['userId'];
+      $game_id = $_SESSION['gameId'];
+
       if(isset($_POST['sendMessage'])) {
         $message = $_POST['message'];
   
         $sql = "INSERT INTO chats (user_id, game_id, message) VALUES (:user_id,:game_id, :message)";
         $stmt = $conn->prepare($sql);
-        $stmt->execute(['user_id' => $_SESSION['userId'],'game_id' => $_SESSION['gameId'], 'message' => $message]);
+        $stmt->execute(['user_id' => $user_id,'game_id' => $game_id, 'message' => $message]);
         header('Location: ' . $_SERVER['PHP_SELF']);
       }
       $game = new Game($conn);  
-      $result = $game->chats($_SESSION['userId'] );
-
-  
-
-    
+      $result = $game->chats($user_id);
 
 ?>
 

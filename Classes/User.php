@@ -98,9 +98,9 @@
             try {
                 $db = new Database();
                 $conn = $db->connect();
-                $query = "SELECT g.id AS game_id, g.title, g.description, g.genre, g.release_date, l.status AS game_status
-                    FROM gamevault_library l
-                    INNER JOIN gamevault_games g ON l.game_id = g.id
+                $query = "SELECT g.id AS game_id, g.title,g.background, g.description, g.genre, g.release_date, l.status AS game_status
+                    FROM library l
+                    INNER JOIN games g ON l.game_id = g.id
                     WHERE l.user_id = :user_id;";
 
                 $stmt = $conn->prepare($query);
@@ -110,10 +110,8 @@
                 return $stmt->fetchAll(PDO::FETCH_ASSOC);
             } catch(PDOException $e) {
                 error_log('Error :' . $e->getMessage());
-                return false;
-            }
+                return ['false' => 'error'];
         }
         
-
     }
-
+}

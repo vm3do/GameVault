@@ -34,6 +34,19 @@ class Game {
             }
         }
 
+    public function getGameById($id) {
+        try{
+            $sql = "SELECT * FROM games WHERE id = :id";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([':id' => $id]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+        catch(PDOException $e) {
+            die("Erreur : " . $e->getMessage());
+            return false;
+        }  
+    }
+
     public static function getAll() {
         try{
             $db = new Database();
@@ -48,6 +61,8 @@ class Game {
             return false;
         }
     }
+
+    
 
     public static function getStats() {
         try {

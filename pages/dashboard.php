@@ -1,4 +1,5 @@
 <?php
+include '../includes/header.php';
 require_once '../Classes/Game.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

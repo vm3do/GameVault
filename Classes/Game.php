@@ -92,4 +92,23 @@ class Game {
 
     }
 
+    public function addReview($user_id, $game_id, $rating, $comment) {
+        try {
+            $query = "UPDATE reviews SET user_id = :user_id,
+                                        game_id = :game_id,
+                                        rating = :rating,
+                                        comment = :comment,
+            ";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute([
+                "user_id"=> $user_id,
+                "game_id"=> $game_id,
+                "rating"=> $rating,
+                "comment"=> $comment
+            ]);
+        } catch (PDOException $e) {
+            error_log("Erreur adding review" . $e->getMessage());
+        }
+    }
+
 }

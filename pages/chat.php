@@ -7,14 +7,11 @@
       
       require '../Classes/Game.php';
     
-      if(!isset($_POST['chat']) && !isset($_POST['user_id']) && !isset($_POST['game_id'])) {
-        header('Location: login.php');
-        exit();
-      }
-      else{
+      if(isset($_POST['chat']) && isset($_POST['user_id']) && isset($_POST['game_id'])) {
         $_SESSION['gameId'] = $_POST['game_id'];
         $_SESSION['userId'] = $_POST['user_id'];
-      }
+
+      }      
       $user_id = $_SESSION['userId'];
       $game_id = $_SESSION['gameId'];
 
@@ -27,7 +24,7 @@
         header('Location: ' . $_SERVER['PHP_SELF']);
       }
       $game = new Game($conn);  
-      $result = $game->chats($user_id);
+      $result = $game->chats($game_id);
 
 ?>
 
@@ -51,22 +48,35 @@
     <!-- Chat History -->
     <div class="flex-1 bg-gray-800 p-4 overflow-y-auto space-y-4">
       <!-- Message 1 -->
-       <?php foreach($result as $row) : ?>
-      <div class="flex items-start space-x-3">
-        <!-- Profile Picture -->
-        <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
-          <span class="text-sm"><?php echo $row['username'][0] ?></span>
+      <?php foreach($result as $row) : ?>
+    <?php if ($row['user_id'] == $user_id) : ?>
+        <div class="flex items-start space-x-3 justify-end">
+            <div>
+                <p class="text-sm font-bold text-right"><?php echo $row['username'] ?></p>
+                <div class="bg-violet-700 p-3 rounded-lg max-w-[100%] mt-1">
+                    <p class="text-sm"><?php echo $row['message'] ?></p>
+                    <span class="text-xs text-gray-400 block mt-1"><?php echo $row['time'] ?></span>
+                </div>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
+                <span class="text-sm"><?php echo $row['username'][0] ?></span>
+            </div>
         </div>
-        <!-- Message Content -->
-        <div>
-          <p class="text-sm font-bold"><?php echo $row['username'] ?></p>
-          <div class="bg-gray-700 p-3 rounded-lg max-w-[100%] mt-1">
-            <p class="text-sm"><?php echo $row['message'] ?></p>
-            <span class="text-xs text-gray-400 block mt-1"><?php echo $row['time'] ?></span>
-          </div>
+    <?php else : ?>
+        <div class="flex items-start space-x-3">
+            <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
+                <span class="text-sm"><?php echo $row['username'][0] ?></span>
+            </div>
+            <div>
+                <p class="text-sm font-bold"><?php echo $row['username'] ?></p>
+                <div class="bg-gray-700 p-3 rounded-lg max-w-[100%] mt-1">
+                    <p class="text-sm"><?php echo $row['message'] ?></p>
+                    <span class="text-xs text-gray-400 block mt-1"><?php echo $row['time'] ?></span>
+                </div>
+            </div>
         </div>
-      </div>
-      <?php endforeach; ?>
+    <?php endif; ?>
+<?php endforeach; ?>
     </div>
     <!-- Message Input -->
     <div class="bg-gray-800 p-4 rounded-b-lg">

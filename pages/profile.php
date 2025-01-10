@@ -1,6 +1,26 @@
 <?php 
   session_start(); 
+  require_once '../Classes/Users.php';
 
+  if (!isset($_SESSION['admin_id']) && !isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit();
+}
+
+// if (isset($_SESSION['admin_id']) && !isset($_SESSION['user_id'])) {
+//     $_SESSION['user_id'] = $_SESSION['admin_id']; 
+// }
+  $games = Users::getLibraryGames($_SESSION['user_id']);
+
+  $db = new Database();
+  $pdo = $db->connect();
+
+  $user = new Users($pdo);
+  if(isset($_GET['remove'])){
+    $user->removeFromLib($_GET['remove']);
+    header('Location: profile.php?game-removed');
+    exit();
+  }
 ?>
 
 
@@ -48,26 +68,27 @@
       <h2 class="mb-4 text-2xl font-bold">Game Library</h2>
       <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         <!-- Game Card 1 -->
-        <div class="overflow-hidden bg-gray-700 rounded-lg shadow-lg">
-          <img src="https://via.placeholder.com/400x200" alt="Game Image" class="object-cover w-full h-48">
+        <?php foreach($games as $game): ?>
+          
+
+          <div class="bg-gray-700 rounded-lg overflow-hidden shadow-lg">
+          <img src="<?= $game['background_url']?>" alt="Game Image" class="w-full h-48 object-cover">
           <div class="p-4">
-            <h3 class="text-lg font-bold">Game Title 1</h3>
-            <p class="text-gray-400">Genre: Action</p>
-            <p class="text-gray-400">Status: <span class="text-green-400">In Progress</span></p>
+            <h3 class="text-lg font-bold"><?= $game['title']?></h3>
+            <p class="text-gray-400">Genre: <?= $game['genre']?></p>
+            <p class="text-gray-400">Status: <span class="text-green-400"><?= $game['game_status']?></span></p>
             <p class="text-gray-400">Rating: ⭐⭐⭐⭐☆</p>
-            <div class="flex mt-4 space-x-2">
-            <form action="gamedetails.php" method="POST">
-              <input type="hidden" name='user_id' value= "<?php echo $_SESSION['user_id']; ?>">
-              <input type="hidden" name='game_id' value= "12" >
-              <button type="submit"class="px-4 py-2 transition rounded bg-violet-accent hover:bg-violet-700">
-                View Details
-              </button>
+            <div class="mt-4 flex space-x-2">
+            <a href="gamedetails.php?game_id=<?= $game['game_id'] ?>" class="bg-violet-accent px-4 py-2 rounded hover:bg-violet-700 transition"> View Details </a>
+            <form action="profile.php" method="GET">
+              <button type=submit name="remove" value="<?= $game['game_id']?>" class="bg-red-500 px-4 py-2 rounded hover:bg-red-600 transition">Remove</button>
             </form>
-      
-              <button class="px-4 py-2 transition bg-red-500 rounded hover:bg-red-600">Remove</button>
             </div>
           </div>
         </div>
+          
+          
+        <?php endforeach; ?>
         <!-- Add more game cards here -->
       </div>
     </section>

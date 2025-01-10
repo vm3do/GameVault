@@ -2,16 +2,19 @@
 
 require_once '../Config/Db.php';
 
-class Game {
-    
+class Game
+{
+
     private $pdo;
 
-    public function __construct($conn) {
+    public function __construct($conn)
+    {
         $this->pdo = $conn;
     }
 
-    public function addGame($title, $description, $genre, $releaseDate, $background, $scrshot1, $scrshot2, $scrshot3, $rating) {
-        try{
+    public function addGame($title, $description, $genre, $releaseDate, $background, $scrshot1, $scrshot2, $scrshot3, $rating)
+    {
+        try {
             $sql = "INSERT INTO games (title, description, genre, release_date, background, screenshot1_url, screenshot2_url, screenshot3_url, rating)
                 VALUES (:title, :description, :genre, :release_date, :background, :screenshot1_url, :screenshot2_url, :screenshot3_url, :rating)";
             $stmt = $this->pdo->prepare($sql);
@@ -27,44 +30,41 @@ class Game {
                 ':rating' => $rating
             ]);
             return true;
+        } catch (PDOException $e) {
+            die("Erreur : " . $e->getMessage());
         }
-            catch(PDOException $e) {
-                die("Erreur : " . $e->getMessage());
-                return false;
-            }
-        }
+    }
 
-    public function getGameById($id) {
-        try{
+    public function getGameById($id)
+    {
+        try {
             $sql = "SELECT * FROM games WHERE id = :id";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute([':id' => $id]);
             return $stmt->fetch(PDO::FETCH_ASSOC);
-        }
-        catch(PDOException $e) {
+        } catch (PDOException $e) {
             die("Erreur : " . $e->getMessage());
-            return false;
-        }  
+        }
     }
 
-    public static function getAll() {
-        try{
+    public static function getAll()
+    {
+        try {
             $db = new Database();
             $conn = $db->connect();
             $sql = "SELECT * FROM games";
             $stmt = $conn->prepare($sql);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        }
-        catch(PDOException $e) {
+        } catch (PDOException $e) {
             die("Erreur : " . $e->getMessage());
-            return false;
         }
     }
 
-    
 
-    public static function getStats() {
+
+    public static function getStats()
+    {
         try {
             $db = new Database();
             $conn = $db->connect();
@@ -92,22 +92,49 @@ class Game {
 
     }
 
-    public function addReview($user_id, $game_id, $rating, $comment) {
+    public function addReview($user_id, $game_id, $rating, $comment)
+    {
         try {
-            $query = "UPDATE reviews SET user_id = :user_id,
-                                        game_id = :game_id,
-                                        rating = :rating,
-                                        comment = :comment,
-            ";
+            $query = "SELECT * FROM reviews WHERE user_id = :user_id AND game_id = :game_id";
             $stmt = $this->pdo->prepare($query);
             $stmt->execute([
-                "user_id"=> $user_id,
-                "game_id"=> $game_id,
-                "rating"=> $rating,
-                "comment"=> $comment
+                'user_id' => $user_id,
+                'game_id' => $game_id,
             ]);
+            if ($stmt->rowCount() > 0) {
+                $query2 = "UPDATE reviews SET rating = :rating, comment = :comment WHERE user_id = :user_id AND game_id = :game_id";
+            } else {
+                $query2 = "INSERT INTO reviews (user_id, game_id, rating, comment)
+                        VALUES (:user_id, :game_id, :rating, :comment)";
+            }
+
+            $stmt = $this->pdo->prepare($query2);
+            $stmt->execute([
+                "user_id" => $user_id,
+                "game_id" => $game_id,
+                "rating" => $rating,
+                "comment" => $comment
+            ]);
+            return true;
+
         } catch (PDOException $e) {
-            error_log("Erreur adding review" . $e->getMessage());
+            error_log("Erreur adding review " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function getRating($game_id)
+    {
+        try {
+            $query = "SELECT ROUND(AVG(rating), 0) AS average FROM reviews WHERE game_id = :game_id";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute([
+                "game_id" => $game_id
+            ]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Erreur getting avg" . $e->getMessage());
+            return false;
         }
     }
 

@@ -27,6 +27,9 @@ if (!isset($_GET['game_id']) || $_GET['game_id'] === "") {
 $game_id = $_GET['game_id'] ?? null;
 $gameDetails = $Game->getGameById($game_id);
 
+$rating = $Game->getRating($game_id);
+print_r($rating);
+
 if (isset($_GET['add_library']) && (isset($_SESSION['user_id']) || isset($_SESSION['admin_id']))) {
 
   $game_filter = filter_var($_GET['add_library'], FILTER_SANITIZE_NUMBER_INT);
@@ -46,7 +49,7 @@ if (isset($_GET['add_library']) && (isset($_SESSION['user_id']) || isset($_SESSI
 }
 
 if(isset($_GET['submit'])){
-  $Game->addReview($user_id, $game_id, $_GET['rating'], $_GET['comment']);
+  $Game->addReview($user_id, $game_id, $_GET['rating'] ?? null, $_GET['comment'] ?? null);
 }
 
 ?>
@@ -95,7 +98,9 @@ if(isset($_GET['submit'])){
           <p class="text-gray-400">Release Date: <?= $gameDetails['release_date'] ?></p>
           <p class="text-gray-400">Genre: <?= $gameDetails['genre'] ?></p>
           <!-- <p class="text-gray-400">Developer: Game Studio</p> -->
-          <p class="text-gray-400">Rating: ⭐⭐⭐⭐☆</p>
+          <p class="text-gray-400">Rating: 
+            <?php while (i <  $rating['rating'])?>
+          </p>
           <p class="text-gray-400 mt-4">
             <?= $gameDetails['description'] ?>
           </p>

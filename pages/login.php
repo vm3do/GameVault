@@ -1,6 +1,6 @@
 <?php
-  include '../includes/header.php';
-  require 'auth.php';
+  include __DIR__ . '/../includes/header.php';
+  require __DIR__ . '/auth.php';
 ?>
 
 <!DOCTYPE html>

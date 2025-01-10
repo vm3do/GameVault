@@ -16,10 +16,10 @@ CREATE TABLE games (
     description TEXT,
     genre VARCHAR(100),
     release_date DATE,
-    background_url VARCHAR(255),
-    screenshot1_url VARCHAR(255),
-    screenshot2_url VARCHAR(255),
-    screenshot3_url VARCHAR(255),
+    background VARCHAR(255),
+    scrshot1 VARCHAR(255),
+    scrshot2 VARCHAR(255),
+    scrshot3 VARCHAR(255),
     rating INT
 );
 

@@ -1,6 +1,6 @@
 <?php
-include '../includes/header.php';
-require_once '../Classes/User.php';
+include __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../Classes/User.php';
 
 $db = new Database();
 $pdo = $db->connect();

@@ -1,14 +1,8 @@
 <?php
-include '../includes/header.php';
+include __DIR__ . '/../includes/header.php';
 require_once __DIR__ . '/../Classes/Game.php';
 
-session_start();
-
 $games = Game::getAll();
-$_SESSION['user_id'] = 2;
-print($_SESSION['user_id']);
-
-
 
 ?>
 

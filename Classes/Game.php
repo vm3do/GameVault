@@ -138,4 +138,18 @@ class Game
         }
     }
 
+    public function getReviews($game_id){
+        try {  
+            $query = "SELECT u.username, r.rating, r.comment FROM reviews r INNER JOIN users u ON
+            r.user_id = u.id WHERE game_id = :game_id";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute([
+                "game_id"=> $game_id
+            ]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Erreur Selecting data". $e->getMessage());
+        }
+    }
+
 }

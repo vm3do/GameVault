@@ -1,6 +1,5 @@
 <?php 
-  session_start(); 
-
+  include '../includes/header.php';
   require '../Classes/Game.php'; 
   require '../Classes/Users.php';
 
@@ -26,6 +25,7 @@ if(!isset($_GET['game_id']) || $_GET['game_id'] === "" ){
 $game_id = $_GET['game_id'] ?? null;
 $gameDetails = $Game->getGameById($game_id);
 
+// -------------------------------------- Add to library -----------------------------------------------
 if (isset($_GET['add_library']) && (isset($_SESSION['user_id']) || isset($_SESSION['admin_id']))) {
 
     $game_filter = filter_var($_GET['add_library'], FILTER_SANITIZE_NUMBER_INT);
@@ -43,6 +43,7 @@ if (isset($_GET['add_library']) && (isset($_SESSION['user_id']) || isset($_SESSI
         }
     } 
 }
+// -------------------------------------- Add to favorate -----------------------------------------------
 else if (isset($_GET['add_favorate']) && (isset($_SESSION['user_id']) || isset($_SESSION['admin_id']))) {
 
     $game_filter = filter_var($_GET['add_favorate'], FILTER_SANITIZE_NUMBER_INT);
@@ -60,6 +61,11 @@ else if (isset($_GET['add_favorate']) && (isset($_SESSION['user_id']) || isset($
         }
     } 
 }
+// -------------------------------------- Add review -----------------------------------------------
+if(isset($_GET['submit'])){
+  $Game->addReview($user_id, $game_id, $_GET['rating'] ?? null, $_GET['comment'] ?? null);
+}
+
 
 ?>
 
@@ -132,8 +138,7 @@ else if (isset($_GET['add_favorate']) && (isset($_SESSION['user_id']) || isset($
                 </svg>
                 </button>
             </form>
-
-              
+  
             </a>
           </div>
         </div>
@@ -143,36 +148,48 @@ else if (isset($_GET['add_favorate']) && (isset($_SESSION['user_id']) || isset($
     <section class="bg-gray-800 p-6 rounded-lg mb-6">
       <h2 class="text-2xl font-bold mb-4">Screenshots</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <img src="https://via.placeholder.com/400x200" alt="Screenshot 1" class="w-full rounded-lg">
-        <img src="https://via.placeholder.com/400x200" alt="Screenshot 2" class="w-full rounded-lg">
-        <img src="https://via.placeholder.com/400x200" alt="Screenshot 3" class="w-full rounded-lg">
+        <img src="<?php echo $game['screenshot1_url'] ?>" alt="Screenshot 1" class="w-full rounded-lg">
+        <img src="<?php echo $game['screenshot2_url'] ?>" alt="Screenshot 2" class="w-full rounded-lg">
+        <img src="<?php echo $game['screenshot3_url'] ?>" alt="Screenshot 3" class="w-full rounded-lg">
       </div>
     </section>
     <!-- Add Comment and Rating Section -->
     <section class="bg-gray-800 p-6 rounded-lg mb-6">
       <h2 class="text-2xl font-bold mb-4">Leave a Review</h2>
       <!-- Rating Input -->
-      <div class="mb-4">
-        <label class="block text-gray-400 mb-2">Your Rating:</label>
-        <div class="flex space-x-2">
-          <button class="text-yellow-400 hover:text-yellow-300">⭐</button>
-          <button class="text-yellow-400 hover:text-yellow-300">⭐</button>
-          <button class="text-yellow-400 hover:text-yellow-300">⭐</button>
-          <button class="text-yellow-400 hover:text-yellow-300">⭐</button>
-          <button class="text-yellow-400 hover:text-yellow-300">⭐</button>
-        </div>
-      </div>
+
       <!-- Comment Input -->
-      <form>
-        <textarea
-          placeholder="Write your comment..."
+      <form action="gamedetails.php" method="GET">
+        <div class="mb-4">
+          <label class="block text-gray-400 mb-2">Your Rating:</label>
+          <div class="flex space-x-2">
+            <input type="radio" id="star5" name="rating" value="5" class="hidden peer">
+            <label for="star5"
+              class="text-4xl cursor-pointer text-gray-300 peer-checked:text-yellow-400 transition duration-300">★</label>
+
+            <input type="radio" id="star4" name="rating" value="4" class="hidden peer">
+            <label for="star4"
+              class="text-4xl cursor-pointer text-gray-300 peer-checked:text-yellow-400 transition duration-300">★</label>
+
+            <input type="radio" id="star3" name="rating" value="3" class="hidden peer">
+            <label for="star3"
+              class="text-4xl cursor-pointer text-gray-300 peer-checked:text-yellow-400 transition duration-300">★</label>
+
+            <input type="radio" id="star2" name="rating" value="2" class="hidden peer">
+            <label for="star2"
+              class="text-4xl cursor-pointer text-gray-300 peer-checked:text-yellow-400 transition duration-300">★</label>
+
+            <input type="radio" id="star1" name="rating" value="1" class="hidden peer">
+            <label for="star1"
+              class="text-4xl cursor-pointer text-gray-300 peer-checked:text-yellow-400 transition duration-300">★</label>
+          </div>
+        </div>
+        <textarea name="comment" placeholder="Write your comment..."
           class="w-full bg-gray-700 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-accent"
-          rows="4"
-        ></textarea>
-        <button
-          type="submit"
-          class="bg-violet-accent px-4 py-2 rounded-lg hover:bg-violet-700 transition mt-4"
-        >
+          rows="4"></textarea>
+          <input type="hidden" name="user_id" value="<?= $user_id ?>">
+          <input type="hidden" name="game_id" value="<?= $game_id ?>">
+        <button type="submit" name="submit" class="bg-violet-accent px-4 py-2 rounded-lg hover:bg-violet-700 transition mt-4">
           Submit Review
         </button>
       </form>
@@ -191,7 +208,8 @@ else if (isset($_GET['add_favorate']) && (isset($_SESSION['user_id']) || isset($
             <p class="text-gray-400">⭐⭐⭐⭐☆</p>
           </div>
         </div>
-        <p class="mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        <p class="mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
+          labore et dolore magna aliqua.</p>
       </div>
       <!-- Review 2 -->
       <div class="bg-gray-700 p-4 rounded-lg mb-4">
@@ -204,10 +222,12 @@ else if (isset($_GET['add_favorate']) && (isset($_SESSION['user_id']) || isset($
             <p class="text-gray-400">⭐⭐⭐☆☆</p>
           </div>
         </div>
-        <p class="mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        <p class="mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
+          labore et dolore magna aliqua.</p>
       </div>
       <!-- Add more reviews here -->
     </section>
   </div>
 </body>
+
 </html>

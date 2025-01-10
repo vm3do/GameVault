@@ -1,3 +1,6 @@
+<?php 
+    include './includes/header.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,18 +12,7 @@
 
 </head>
 <body class="text-white bg-gray-900">
-  <!-- Header -->
-  <header class="fixed z-50 w-full bg-transparent backdrop-blur-sm">
-    <div class="container flex items-center justify-between p-4 mx-auto">
-      <!-- Logo -->
-      <div class="text-xl font-bold text-violet-accent">VirtualWorld</div>
-      <!-- CTA Buttons -->
-      <div class="space-x-4">
-        <button class="px-4 py-2 transition rounded-lg bg-violet-accent hover:bg-violet-700" id="toLogin">Login</button>
-        <button class="px-4 py-2 transition bg-gray-700 rounded-lg hover:bg-gray-600" id="toSignup">Sign Up</button>
-      </div>
-    </div>
-  </header>
+
 
   <!-- GIF Background Section -->
   <div class="gif-container">

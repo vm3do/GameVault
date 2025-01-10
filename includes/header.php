@@ -64,12 +64,12 @@ session_start();
             <!-- Visible Links (Profile, Games, Dashboard for Admin) -->
             <div class="hidden md:flex space-x-4">
                 <?php if (isset($_SESSION['admin_id']) || isset($_SESSION['user_id'])): ?>
-                    <a href="games.php"
+                    <a href="pages/games.php"
                         class="link-padding link-hover-effect hover:text-violet-accent transition border-b-2 border-violet-accent">Games</a>
-                    <a href="profile.php"
+                    <a href="pages/profile.php"
                         class="link-padding link-hover-effect hover:text-violet-accent transition border-b-2 border-violet-accent">Profile</a>
                     <?php if (isset($_SESSION['admin_id'])): ?>
-                        <a href="dashboard.php"
+                        <a href="pages/dashboard.php"
                             class="link-padding link-hover-effect hover:text-violet-accent transition border-b-2 border-violet-accent">Dashboard</a>
                     <?php endif; ?>
                 <?php endif; ?>

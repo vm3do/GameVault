@@ -27,12 +27,5 @@ include __DIR__ . '../includes/header.php';
       <a href="pages/games.php" class="bg-violet-accent px-6 py-3 rounded-lg hover:bg-violet-700 transition text-lg">Explore Games</a>
     </div>
   </div>
-
-  <section class="py-16 bg-gray-900">
-    <div class="container mx-auto text-center">
-      <h2 class="text-3xl font-bold mb-4">Discover More</h2>
-      <p class="text-gray-400">Join our community and dive into the ultimate gaming experience.</p>
-    </div>
-  </section>
 </body>
 </html>

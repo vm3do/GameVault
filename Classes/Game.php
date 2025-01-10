@@ -4,7 +4,6 @@ require_once '../Config/Db.php';
 
 class Game
 {
-
     private $pdo;
 
     public function __construct($conn)
@@ -15,8 +14,8 @@ class Game
     public function addGame($title, $description, $genre, $releaseDate, $background, $scrshot1, $scrshot2, $scrshot3, $rating)
     {
         try {
-            $sql = "INSERT INTO games (title, description, genre, release_date, background, screenshot1_url, screenshot2_url, screenshot3_url, rating)
-                VALUES (:title, :description, :genre, :release_date, :background, :screenshot1_url, :screenshot2_url, :screenshot3_url, :rating)";
+            $sql = "INSERT INTO games (title, description, genre, release_date, background, scrshot1, scrshot2, scrshot3, rating)
+                VALUES (:title, :description, :genre, :release_date, :background, :scrshot1, :scrshot2, :scrshot3, :rating)";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute([
                 ':title' => $title,
@@ -24,9 +23,9 @@ class Game
                 ':genre' => $genre,
                 ':release_date' => $releaseDate,
                 ':background' => $background,
-                ':screenshot1_url' => $scrshot1,
-                ':screenshot2_url' => $scrshot2,
-                ':screenshot3_url' => $scrshot3,
+                ':scrshot1' => $scrshot1,
+                ':scrshot2' => $scrshot2,
+                ':scrshot3' => $scrshot3,
                 ':rating' => $rating
             ]);
             return true;
@@ -35,13 +34,47 @@ class Game
         }
     }
 
-    public function getGameById($id)
+    public function updateGame($gameId, $new_title, $new_description, $new_genre, $new_releaseDate, $new_background, $new_scrshot1, $new_scrshot2, $new_scrshot3, $new_rating)
     {
         try {
-            $sql = "SELECT * FROM games WHERE id = :id";
+            $sql = "UPDATE games SET 
+                        title = :title, 
+                        description = :description, 
+                        genre = :genre, 
+                        release_date = :release_date, 
+                        background = :background, 
+                        scrshot1 = :scrshot1, 
+                        scrshot2 = :scrshot2, 
+                        scrshot3 = :scrshot3, 
+                        rating = :rating
+                WHERE id = :id";
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute([':id' => $id]);
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt->execute([
+                'id' => $gameId,
+                'title' => $new_title,
+                'description' => $new_description,
+                'genre' => $new_genre,
+                'release_date' => $new_releaseDate,
+                'background' => $new_background,
+                'scrshot1' => $new_scrshot1,
+                'scrshot2' => $new_scrshot2,
+                'scrshot3' => $new_scrshot3,
+                'rating' => $new_rating,
+
+            ]);
+            return true;
+        } catch (PDOException $e) {
+            die("Erreur : " . $e->getMessage());
+        }
+    }
+
+    public function deleteGame($id)
+    {
+        try {
+            $sql = "DELETE FROM games WHERE id = :id";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(['id' => $id]);
+            return true;
         } catch (PDOException $e) {
             die("Erreur : " . $e->getMessage());
         }
@@ -61,8 +94,17 @@ class Game
         }
     }
 
-
-
+    public function getGameById($id)
+    {
+        try {
+            $sql = "SELECT * FROM games WHERE id = :id";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([':id' => $id]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            die("Erreur : " . $e->getMessage());
+        }
+    }
     public static function getStats()
     {
         try {
@@ -138,17 +180,31 @@ class Game
         }
     }
 
-    public function getReviews($game_id){
-        try {  
+    public function getReviews($game_id)
+    {
+        try {
             $query = "SELECT u.username, r.rating, r.comment FROM reviews r INNER JOIN users u ON
             r.user_id = u.id WHERE game_id = :game_id";
             $stmt = $this->pdo->prepare($query);
             $stmt->execute([
-                "game_id"=> $game_id
+                "game_id" => $game_id
             ]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            error_log("Erreur Selecting data". $e->getMessage());
+            error_log("Erreur Selecting data" . $e->getMessage());
+        }
+    }
+
+    public function chats($game_id)
+    {
+        try {
+            $sql = "SELECT u.username, c.message, c.time, c.user_id FROM chats c JOIN users u ON c.user_id = u.id WHERE c.game_id = :game_id";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([':game_id' => $game_id]);
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $result;
+        } catch (PDOException $e) {
+            die("Erreur : " . $e->getMessage());
         }
     }
 

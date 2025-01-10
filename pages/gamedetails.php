@@ -28,7 +28,9 @@ $game_id = $_GET['game_id'] ?? null;
 $gameDetails = $Game->getGameById($game_id);
 
 $rating = $Game->getRating($game_id);
-$reviews = $Game->getReviews(10);
+$reviews = $Game->getReviews($game_id);
+
+print_r($reviews);
 
 if (isset($_GET['add_library']) && (isset($_SESSION['user_id']) || isset($_SESSION['admin_id']))) {
 

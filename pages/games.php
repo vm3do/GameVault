@@ -1,5 +1,6 @@
 <?php
-  session_start(); 
+
+  include '../includes/header.php';
   require_once '../Classes/Game.php';
 
   $games = Game::getAll();
@@ -18,19 +19,7 @@
   <link rel="stylesheet" href="../css/style.css">
 </head>
 <body class="bg-gray-900 text-white">
-  <!-- Header -->
-  <header class="bg-gray-800 p-4">
-    <div class="container mx-auto flex justify-between items-center">
-      <!-- Logo -->
-      <div class="text-xl font-bold text-violet-accent">VirtualWorld</div>
-      <!-- Navigation -->
-      <nav class="space-x-4">
-        <a href="#" class="hover:text-violet-accent transition">Home</a>
-        <a href="#" class="hover:text-violet-accent transition">Library</a>
-        <a href="#" class="hover:text-violet-accent transition">Profile</a>
-      </nav>
-    </div>
-  </header>
+
 
   <!-- Carousel Section -->
   <section class="container mx-auto p-6">

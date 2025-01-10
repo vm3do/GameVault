@@ -1,15 +1,13 @@
 <?php 
-  session_start(); 
-  require_once '../Classes/Users.php';
 
+  include '../includes/header.php';
+  require_once '../Classes/Users.php';
+  
   if (!isset($_SESSION['admin_id']) && !isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit();
 }
 
-// if (isset($_SESSION['admin_id']) && !isset($_SESSION['user_id'])) {
-//     $_SESSION['user_id'] = $_SESSION['admin_id']; 
-// }
   $games = Users::getLibraryGames($_SESSION['user_id']);
 
   $db = new Database();

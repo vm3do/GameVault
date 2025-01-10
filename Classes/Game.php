@@ -118,7 +118,7 @@ class Game {
   }
 
   public function chats($game_id) {
-    try{
+    try{  
         $sql = "SELECT u.username, c.message, c.time, c.user_id FROM chats c JOIN users u ON c.user_id = u.id WHERE c.game_id = :game_id";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':game_id' => $game_id]);
@@ -157,6 +157,52 @@ class Game {
         return false;
     }
 
+  }
+
+  public function addReview($user_id, $game_id, $rating, $comment)
+  {
+      try {
+          $query = "SELECT * FROM reviews WHERE user_id = :user_id AND game_id = :game_id";
+          $stmt = $this->pdo->prepare($query);
+          $stmt->execute([
+              'user_id' => $user_id,
+              'game_id' => $game_id,
+          ]);
+          if ($stmt->rowCount() > 0) {
+              $query2 = "UPDATE reviews SET rating = :rating, comment = :comment WHERE user_id = :user_id AND game_id = :game_id";
+          } else {
+              $query2 = "INSERT INTO reviews (user_id, game_id, rating, comment)
+                      VALUES (:user_id, :game_id, :rating, :comment)";
+          }
+
+          $stmt = $this->pdo->prepare($query2);
+          $stmt->execute([
+              "user_id" => $user_id,
+              "game_id" => $game_id,
+              "rating" => $rating,
+              "comment" => $comment
+          ]);
+          return true;
+
+      } catch (PDOException $e) {
+          error_log("Erreur adding review " . $e->getMessage());
+          return false;
+      }
+  }
+
+  public function getRating($game_id)
+  {
+      try {
+          $query = "SELECT ROUND(AVG(rating), 0) AS average FROM reviews WHERE game_id = :game_id";
+          $stmt = $this->pdo->prepare($query);
+          $stmt->execute([
+              "game_id" => $game_id
+          ]);
+          return $stmt->fetch(PDO::FETCH_ASSOC);
+      } catch (PDOException $e) {
+          error_log("Erreur getting avg" . $e->getMessage());
+          return false;
+      }
   }
 }
 

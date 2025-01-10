@@ -1,5 +1,6 @@
 <?php 
-      session_start(); 
+
+      include '../includes/header.php';
       require_once '../Config/db.php';
 
       $db = new Database();
@@ -63,7 +64,7 @@
             </div>
         </div>
     <?php else : ?>
-        <div class="flex items-start space-x-3">
+        <div class="flex items-start space-x-3+">
             <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
                 <span class="text-sm"><?php echo $row['username'][0] ?></span>
             </div>

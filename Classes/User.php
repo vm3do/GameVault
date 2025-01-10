@@ -31,7 +31,6 @@ class User
             echo "Erreur : " . $e->getMessage();
             return false;
         }
-        return $stmt;
     }
 
     public function loginUser($email, $password)

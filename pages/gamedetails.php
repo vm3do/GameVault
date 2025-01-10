@@ -28,7 +28,9 @@ $game_id = $_GET['game_id'] ?? null;
 $gameDetails = $Game->getGameById($game_id);
 
 $rating = $Game->getRating($game_id);
-print_r($rating);
+$reviews = $Game->getReviews(10);
+echo "<pre>"; print_r($rating); echo "</pre>";
+echo "<pre>"; print_r($reviews); echo "</pre>";
 
 if (isset($_GET['add_library']) && (isset($_SESSION['user_id']) || isset($_SESSION['admin_id']))) {
 
@@ -61,6 +63,7 @@ if(isset($_GET['submit'])){
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Game Details</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     /* Custom violet accent */
@@ -99,7 +102,17 @@ if(isset($_GET['submit'])){
           <p class="text-gray-400">Genre: <?= $gameDetails['genre'] ?></p>
           <!-- <p class="text-gray-400">Developer: Game Studio</p> -->
           <p class="text-gray-400">Rating: 
-            <?php while (i <  $rating['rating'])?>
+            <?php $i = 0;
+                  while ($i < $rating['average']){
+                    echo '<i class="fas fa-star text-yellow-400"></i>';
+                    $i++;
+                  }
+                  $j=0;
+                  $diff = 5 - $rating['average'];
+                  while ($j < $diff){
+                    echo '<i class="fas fa-star text-gray-400"></i>';
+                    $j++;
+                  }?>
           </p>
           <p class="text-gray-400 mt-4">
             <?= $gameDetails['description'] ?>
@@ -188,19 +201,32 @@ if(isset($_GET['submit'])){
     <section class="bg-gray-800 p-6 rounded-lg">
       <h2 class="text-2xl font-bold mb-4">Reviews</h2>
       <!-- Review 1 -->
-      <div class="bg-gray-700 p-4 rounded-lg mb-4">
-        <div class="flex items-center space-x-3">
-          <div class="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center">
-            <span class="text-sm">U</span>
+      <?php foreach($reviews as $review): ?>
+          <div class="bg-gray-700 p-4 rounded-lg mb-4">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center">
+              <span class="text-sm">U</span>
+            </div>
+            <div>
+              <p class="font-bold"><?= $review['username']?></p>
+              <?php $i = 0;
+                  while ($i < $review['rating']){
+                    echo '<i class="fas fa-star text-yellow-400"></i>';
+                    $i++;
+                  }
+                  $j=0;
+                  $diff = 5 - $review['rating'];
+                  while ($j < $diff){
+                    echo '<i class="fas fa-star text-gray-400"></i>';
+                    $j++;
+                  }?>
+              </p>
+            </div>
           </div>
-          <div>
-            <p class="font-bold">Username</p>
-            <p class="text-gray-400">⭐⭐⭐⭐☆</p>
-          </div>
+          <p class="mt-2"><?= $review['comment']?></p>
         </div>
-        <p class="mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
-          labore et dolore magna aliqua.</p>
-      </div>
+      <?php endforeach; ?>
+
       <!-- Review 2 -->
       <div class="bg-gray-700 p-4 rounded-lg mb-4">
         <div class="flex items-center space-x-3">

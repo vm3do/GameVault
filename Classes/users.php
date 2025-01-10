@@ -1,4 +1,5 @@
 <?php
+    require_once '../Config/db.php';
 
 class Users { 
     private $connection;
@@ -58,43 +59,159 @@ class Users {
       return ['message' => "Error: " . $e->getMessage()];
     }
   }
+  public function getUserById(){
+    try{
+        $sql = "SELECT * FROM users WHERE id =:id ";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    catch(Exception $e) {
+      return ['message' => "Error: " . $e->getMessage()];
+    }
+  }
+
 
   public function addToLibrary($user_id, $game_id){
 
     try {
-        $query = "INSERT INTO library (user_id, game_id) VALUES (:user_id, :game_id);";
+        $query = "SELECT * FROM library where game_id = :game_id AND user_id = :user_id;";
         $stmt = $this->connection->prepare($query);
         $stmt->execute([
-        ':user_id' => $user_id,
-        ':game_id' => $game_id
+            ':game_id' => $game_id,
+            ':user_id' => $user_id
         ]);
 
-        return true;
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if(!$row){
+            $query = "INSERT INTO library (user_id, game_id) VALUES (:user_id, :game_id);";
+            $stmt = $this->connection->prepare($query);
+            $stmt->execute([
+                ':user_id'=> $user_id,
+                ':game_id'=> $game_id
+            ]);
+
+            $query = "INSERT INTO history (user_id, game_id) VALUES (:user_id, :game_id);";
+            $stmt = $this->connection->prepare($query);
+            $stmt->execute([
+                ':user_id' => $user_id,
+                ':game_id' => $game_id
+            ]);
+
+            return true;
+        }
+        return false;
     }
     catch(PDOException $e) {
-        error_log("Error : " . $e->getMessage());
+        error_log("Error in adding to Lib : " . $e->getMessage());
         return false;
     }
 
 }
+public function removeFromLib($game_id){
 
-  public static function getLibraryGames($user_id){
-      try {
-          $db = new Database();
-          $conn = $db->connect();
-          $query = "SELECT g.id AS game_id, g.title, g.description, g.genre, g.release_date, l.status AS game_status
-              FROM gamevault_library l
-              INNER JOIN gamevault_games g ON l.game_id = g.id
-              WHERE l.user_id = :user_id;";
-
-          $stmt = $conn->prepare($query);
-          $stmt->execute([
-              ':user_id' => $user_id
-          ]);
-          return $stmt->fetchAll(PDO::FETCH_ASSOC);
-      } catch(PDOException $e) {
-          error_log('Error :' . $e->getMessage());
-          return false;
-      }
+  try {
+      $query = "DELETE FROM library WHERE game_id = :game_id";
+      $stmt = $this->connection->prepare($query);
+      $stmt->execute([
+          ':game_id' => $game_id,
+      ]);
+      return true;
   }
+  catch(PDOException $e) {
+      error_log("Error in adding to Lib : " . $e->getMessage());
+      return ['Erreur: ' => 'not deleted'];
+  }
+}
+
+public function getFromHistory($user_id) {
+  try {
+      $query = "SELECT g.title, h.created_at FROM history h JOIN games g ON h.game_id = g.id WHERE h.user_id = :user_id;";
+      $stmt = $this->connection->prepare($query);
+      $stmt->execute([':user_id' => $user_id]);
+
+      return $stmt->fetchAll(PDO::FETCH_ASSOC); 
+  } 
+  catch (PDOException $e) {
+    die("Error in backup history games : " . $e->getMessage());
+    return false;
+  }
+}
+
+public static function getLibraryGames($user_id){
+  try {
+      $db = new Database();
+      $conn = $db->connect();
+      $query = "SELECT g.id AS game_id, g.title,g.background_url, g.description, g.genre, g.release_date, l.status AS game_status
+          FROM library l
+          INNER JOIN games g ON l.game_id = g.id
+          WHERE l.user_id = :user_id;";
+
+      $stmt = $conn->prepare($query);
+      $stmt->execute([
+          ':user_id' => $user_id
+      ]);
+      return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  } catch(PDOException $e) {
+      error_log('Error :' . $e->getMessage());
+      return ['false' => 'error'];
+}
+
+}
+public function addToFavorite($user_id, $game_id) {
+  try {
+      $query = "SELECT * FROM favorites WHERE game_id = :game_id AND user_id = :user_id;";
+      $stmt = $this->connection->prepare($query);
+      $stmt->execute([
+          ':game_id' => $game_id,
+          ':user_id' => $user_id
+      ]);
+
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+      if (!$row) {
+          $query = "INSERT INTO favorites (user_id, game_id) VALUES (:user_id, :game_id);";
+          $stmt = $this->connection->prepare($query);
+          $stmt->execute([
+              ':user_id' => $user_id,
+              ':game_id' => $game_id
+          ]);
+
+          return true; 
+      }
+      return false; 
+  }
+  catch (PDOException $e) {
+    die("Error during adding to favorites : " . $e->getMessage());
+    return false;
+  }
+}
+
+public function getFavoriteGames($user_id) {
+  try {
+      $query = " SELECT g.id AS game_id, g.title,  g.genre,  g.background_url FROM favorites f JOIN games g ON f.game_id = g.id WHERE f.user_id = :user_id;";
+      $stmt = $this->connection->prepare($query);
+      $stmt->execute([':user_id' => $user_id]);
+      return $stmt->fetchAll(PDO::FETCH_ASSOC);
+   }
+   catch (PDOException $e) {
+    die("Error : " . $e->getMessage());
+    return false;
+  }
+}
+
+public function removeFromFavorite($game_id) {
+  try {
+      $query = "DELETE FROM favorites WHERE game_id = :game_id;";
+      $stmt = $this->connection->prepare($query);
+      $stmt->execute([':game_id' => $game_id]);
+      return true; 
+      }
+  catch (PDOException $e) {
+    die("Error : " . $e->getMessage());
+    return false;
+  }
+
+}
 }

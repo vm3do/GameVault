@@ -89,7 +89,7 @@ class Game {
       }
   }
 
-  public static function getAllGames() {
+  public static function getAll() {
     try{
       $db = new Database();
       $conn = $db->get_connection();
@@ -117,11 +117,11 @@ class Game {
     }  
   }
 
-  public function chats($id) {
+  public function chats($game_id) {
     try{
-        $sql = "SELECT u.username, c.message, c.time FROM chats c JOIN users u ON c.user_id = u.id WHERE c.user_id = :user_id";
+        $sql = "SELECT u.username, c.message, c.time, c.user_id FROM chats c JOIN users u ON c.user_id = u.id WHERE c.game_id = :game_id";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':user_id'=> $id]);
+        $stmt->execute([':game_id' => $game_id]);
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;
       }

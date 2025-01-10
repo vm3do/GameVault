@@ -2,12 +2,17 @@
 
     require './usersManagement.php';
     require './gameCRUD.php';
-
     require '../Classes/users.php';
+
+  if (!isset($_SESSION['admin_id'])) {
+      header('Location: login.php');
+      exit();
+  }
+  
     $users = new Users($conn);
     $allUsers = $users->getAllUsers();
-
-    $allGames = Game::getAllGames();
+    
+    $allGames = Game::getAll();
 
 ?>
 

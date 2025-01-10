@@ -2,16 +2,8 @@
   session_start(); 
   require_once '../Classes/Game.php';
 
-  $games = Game::getAllGames();
+  $games = Game::getAll();
 
-if (!isset($_SESSION['admin_id']) && !isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit();
-}
-
-if (isset($_SESSION['admin_id']) && !isset($_SESSION['user_id'])) {
-    $_SESSION['user_id'] = $_SESSION['admin_id']; 
-}
 
 
 ?>
@@ -118,13 +110,11 @@ if (isset($_SESSION['admin_id']) && !isset($_SESSION['user_id'])) {
                 <div class="p-4">
                     <h2 class="text-xl font-bold mb-2"><?= $game['title'] ?></h2>
                     <p class="text-gray-400 mb-4">Genre: <?= $game['genre'] ?> | Release Date: <?= $game['release_date'] ?></p>
-                    <form action="gamedetails.php" method="POST">
-                      <input type="hidden" name='user_id' value= "<?php echo $_SESSION['user_id']; ?>">
-                      <input type="hidden" name='game_id' value= "<?php echo $game['id'];?>" >
-                      <button type="submit"class="bg-violet-accent w-full px-4 py-2 rounded-lg hover:bg-violet-700 transition">
+                    
+                    <a href="gamedetails.php?game_id=<?= $game['id'] ?>" class="block bg-violet-accent w-full px-4 py-2 rounded-lg hover:bg-violet-700 transition text-center">
                         View Details
-                      </button>
-                    </form>
+                    </a>
+                  
             
                 </div>
             </div>

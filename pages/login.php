@@ -1,5 +1,6 @@
 <?php
-      require 'auth.php';
+  include '../includes/header.php';
+  require 'auth.php';
 ?>
 
 <!DOCTYPE html>

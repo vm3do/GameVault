@@ -1,3 +1,9 @@
+<?php
+
+include __DIR__ . '../includes/header.php';
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,18 +14,6 @@
   <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body class="bg-gray-900 text-white">
-
-  <header class="fixed w-full z-50 bg-transparent backdrop-blur-sm">
-    <div class="container mx-auto flex justify-between items-center p-4">
-
-      <div class="text-xl font-bold text-violet-accent">GameVault</div>
-
-      <div class="space-x-4">
-        <button class="bg-violet-accent px-4 py-2 rounded-lg hover:bg-violet-700 transition">Login</button>
-        <button class="bg-gray-700 px-4 py-2 rounded-lg hover:bg-gray-600 transition">Sign Up</button>
-      </div>
-    </div>
-  </header>
 
   <div class="gif-container">
     <!-- GIF -->

@@ -1,3 +1,29 @@
+<?php
+include '../includes/header.php';
+require_once '../Classes/User.php';
+
+$db = new Database();
+$pdo = $db->connect();
+
+if(isset($_SESSION['admin_id']) || isset($_SESSION['user_id'])){
+  if(isset($_SESSION['user_id'])){
+    $user_id = $_SESSION['user_id'];
+  }
+  if(isset($_SESSION['admin_id'])){
+    $user_id = $_SESSION['user_id'];
+  }
+  $user = new User($pdo);
+  $info = $user->getInfo($user_id);
+} else {
+  header('Location: login.php');
+  exit();
+}
+
+if(isset($_GET['update'])){
+  $user->updateInfo($_GET['update'], $_GET['username'], $_GET['email'], $_GET['password'] );
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,6 +42,22 @@
     .border-violet-accent {
       border-color: #7c3aed;
     }
+    /* Hide default file input */
+    .file-input {
+      display: none;
+    }
+    /* Custom file input button */
+    .file-input-label {
+      background-color: #7c3aed;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .file-input-label:hover {
+      background-color: #6d28d9;
+    }
   </style>
 </head>
 <body class="bg-gray-900 text-white">
@@ -27,15 +69,31 @@
     </header>
     <!-- Settings Form -->
     <section class="bg-gray-800 p-6 rounded-lg mb-6">
-      <form class="space-y-6">
+      <form action="settings.php" method="GET" class="space-y-6">
         <!-- Profile Picture -->
         <div>
           <label class="block text-gray-400 mb-2">Profile Picture</label>
           <div class="flex items-center space-x-4">
-            <div class="w-20 h-20 rounded-full bg-gray-700 flex items-center justify-center">
-              <span class="text-2xl">U</span>
+            <!-- Profile Picture Circle -->
+            <div class="w-20 h-20 rounded-full bg-gray-700 overflow-hidden">
+              <img
+                src="https://via.placeholder.com/150"
+                alt="Profile Picture"
+                class="w-full h-full object-cover"
+              />
             </div>
-            <input type="file" class="bg-gray-700 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-accent">
+            <!-- File Input -->
+            <div>
+              <input
+                type="file"
+                id="file-input"
+                class="file-input"
+                accept="image/*"
+              />
+              <label for="file-input" class="file-input-label">
+                Upload Image
+              </label>
+            </div>
           </div>
         </div>
         <!-- Name -->
@@ -43,7 +101,8 @@
           <label class="block text-gray-400 mb-2">Name</label>
           <input
             type="text"
-            value="Username"
+            name="username"
+            value="<?= $info['username']?>"
             class="w-full bg-gray-700 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-accent"
           />
         </div>
@@ -52,7 +111,8 @@
           <label class="block text-gray-400 mb-2">Email</label>
           <input
             type="email"
-            value="user@example.com"
+            name="email"
+            value="<?= $info['email']?>"
             class="w-full bg-gray-700 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-accent"
           />
         </div>
@@ -61,6 +121,7 @@
           <label class="block text-gray-400 mb-2">Password</label>
           <input
             type="password"
+            name="password"
             placeholder="Enter new password"
             class="w-full bg-gray-700 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-accent"
           />
@@ -68,6 +129,8 @@
         <!-- Save Button -->
         <button
           type="submit"
+          name="update"
+          value="<?= $info['id']?>"
           class="bg-violet-accent px-4 py-2 rounded-lg hover:bg-violet-700 transition"
         >
           Save Changes

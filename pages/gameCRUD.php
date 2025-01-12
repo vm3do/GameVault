@@ -1,4 +1,6 @@
 <?php
+ob_start();
+
   require_once __DIR__ . '/../Config/Db.php';
   require __DIR__ . '/../Classes/Game.php';
   
@@ -21,7 +23,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
       $game = new Game($pdo);
     $result =  $game->addGame($title, $description, $genre, $releaseDate, $background, $scrshot1, $scrshot2, $scrshot3, $rating);
     if($result){
-      header('Location: ' . $_SERVER['PHP_SELF']);
+      header('Location: dashboard.php?sucess');
       exit;
     }
     else{
@@ -68,3 +70,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   }
 }
 
+ob_end_flush();

@@ -2,12 +2,20 @@
 include __DIR__ . '/../includes/header.php';
 require_once __DIR__ . '/../Classes/User.php';
 
-  $games = User::getLibraryGames($_SESSION['user_id']);
+if(!isset($_SESSION['admin_id']) && !isset($_SESSION['user_id'])){
 
-  $db = new Database();
+  header('Location: login.php');
+  exit();
+}
+
+$db = new Database();
   $pdo = $db->connect();
 
+  $user_id = $_SESSION['user_id'] ?? $_SESSION['admin_id'] ?? null;
   $user = new User($pdo);
+  $info = $user->getInfo($user_id);
+  $games = User::getLibraryGames($user_id);
+
   if(isset($_GET['remove'])){
     $user->removeFromLib($_GET['remove']);
     header('Location: profile.php?game-removed');
@@ -52,8 +60,8 @@ require_once __DIR__ . '/../Classes/User.php';
         </div>
         <!-- Profile Details -->
         <div class="flex-1">
-          <h2 class="text-xl font-bold">Username</h2>
-          <p class="text-gray-400">Email: user@example.com</p>
+          <h2 class="text-xl font-bold"><?= ucfirst($info['username'])?></h2>
+          <p class="text-gray-400">Email: <?= $info['email']?></p>
           <p class="text-gray-400">Member since: January 2023</p>
         </div>
         <!-- Settings Icon -->

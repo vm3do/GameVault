@@ -6,12 +6,7 @@ $db = new Database();
 $pdo = $db->connect();
 
 if(isset($_SESSION['admin_id']) || isset($_SESSION['user_id'])){
-  if(isset($_SESSION['user_id'])){
-    $user_id = $_SESSION['user_id'];
-  }
-  if(isset($_SESSION['admin_id'])){
-    $user_id = $_SESSION['user_id'];
-  }
+  $user_id = $_SESSION['user_id'] ?? $_SESSION['admin_id'] ?? null;
   $user = new User($pdo);
   $info = $user->getInfo($user_id);
 } else {

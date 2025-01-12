@@ -96,7 +96,7 @@ $stats = Game::getStats();
       </div>
       <!-- Active Chats -->
       <div class="bg-gray-800 p-6 rounded-lg">
-        <h3 class="text-gray-400">Active Chats</h3>
+        <h3 class="text-gray-400">Banned Users</h3>
         <p class="text-2xl font-bold"><?php echo $stats['total_banned'] ?></p>
       </div>
     </section>

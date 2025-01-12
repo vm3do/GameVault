@@ -124,8 +124,8 @@ class Game
 
             return [
                 'total_Games' => $allGames['total_games'] ?? 0,
-                'total_Users' => $allUers['total_users'] ?? 0,
-                'total_banned' => $allUers['banned'] ?? 0
+                'total_Users' => $allUsers['total_users'] ?? 0,
+                'total_banned' => $allUsers['banned'] ?? 0
             ];
         } catch (PDOException $e) {
             error_log("Error : " . $e->getMessage());

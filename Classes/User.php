@@ -235,6 +235,11 @@ class User
         }
     }
 
+    public function upload(){
+        try {}
+        catch (PDOException $e) {}
+    }
+
     public function updateInfo($user_id, $username, $email, $password)
     {
         try {
@@ -245,6 +250,9 @@ class User
                 $updates[] = "username = :username";
             }
             if (!empty($email)) {
+                if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+                    return ['verify' => false, 'message' => "invalid Email"];
+                }
                 $updates[] = "email = :email";
             }
             if (!empty($password)) {
